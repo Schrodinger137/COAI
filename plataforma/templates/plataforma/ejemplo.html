@@ -1,0 +1,50 @@
+{% extends "plataforma/menu.html" %}
+
+{%block usuario_logeado%} EJEMPLO{% endblock%}
+
+{% block menu %}
+<!-- Menú de navegación -->
+<ul class="nav flex-column">
+    <hr>
+    <li class="nav-item ">
+        <a class="nav-link" href="{%url 'index'%}">Index</a>
+    </li>
+    <hr>
+    <li class="nav-item ">
+        <a class="nav-link" href="{%url 'ejemplo'%}">Ejemplo</a>
+    </li>
+    <hr>
+</ul>
+<!-- /Fin menú -->
+{%endblock%}
+
+
+{%block contenido%}
+<div>
+    <h3>Alumnos</h3>
+    <br><br>
+
+    <h1>Cards para tareas etc</h1>
+    <div class="row">
+        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
+            <div class="card border-2 border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Título</h5>
+                    <p class="card-text">Contenido...</p>
+                    <a href="#" class="card-link float-end">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+
+<h1>para las listas</h1>
+        <div class="container p-3"> <!-- Contenedor con padding -->
+    <div class="card border-2 border-success">
+        <div class="card-body">
+            <h5 class="card-title">Alumno: <span class="text-muted">Fulano de tal</span></h5>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,24 @@
+{% extends "plataforma/menu.html" %}
+
+{% block usuario_logeado %}INVITADO{% endblock %}
+
+{% block menu %}
+<ul class="nav flex-column">
+    <hr>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Index</a>
+    </li>
+    <hr>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'ejemplo' %}">Ejemplo</a>
+    </li>
+    <hr>
+</ul>
+{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>index</h3>
+    <!-- Aquí puedes añadir más contenido específico -->
+</div>
+{% endblock %}
