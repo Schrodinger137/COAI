@@ -8,7 +8,9 @@
 <div class="d-flex gap-4">
     <img src="https://www.coldelvalle.edu.mx/wp-content/uploads/2021/10/2.-Ki%CC%81nder-o-preescolar-1-1536x831.jpg"
         alt="Imagen del kinder" style="width: 60%; height: auto;">
+    {% if request.user.is_authenticated %}
 
+    {% else %}
     <div>
         <div class="card border-2 border-success h-100">
             <div class="card-body">
@@ -29,6 +31,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 <br>
 <div class="d-flex col-md-7">
