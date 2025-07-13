@@ -26,3 +26,7 @@ def log_in(request):
             return redirect('index')
 
     return render(request, 'index')
+
+def log_out(request):
+    logout(request)
+    return redirect('index')

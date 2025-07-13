@@ -38,6 +38,18 @@
                 max-width: 14%;
             }
         }
+
+        .cerrar-sesion {
+            background-color: #ff9561;
+            color: white;
+            border: none;
+            float: right;
+            margin-left: auto;
+        }
+
+        .cerrar-sesion:hover {
+            background-color: #ff7a3d;
+        }
     </style>
 </head>
 
@@ -47,12 +59,18 @@
             <div class="w-100 p-2">
                 <a class="navbar-brand">
                     <strong class="text-white"><u><i><a href="{% url 'index' %}" class="text-white">C O A I </a></u> -
-                    {% if request.user.is_authenticated %}
-                    {{ user.username }}
-                    {% else %}
-                    Invitado
-                    {% endif %}
-                    </i></strong>
+                        {% if request.user.is_authenticated %}
+                        {{ user.username }}
+                        {% else %}
+                        Invitado
+                        {% endif %}
+
+
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'logout' %}"><button class="btn cerrar-sesion">Cerrar Sesión</button></a>
+                        {% else %}
+                        {% endif %}
+                        </i></strong>
                 </a>
             </div>
         </nav>
