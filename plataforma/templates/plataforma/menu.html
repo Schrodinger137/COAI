@@ -28,6 +28,7 @@
 
         .sidebar-button:hover {
             background-color: #5ca642;
+            color: white;
         }
 
         /* Clase personalizada para ancho intermedio */
@@ -44,10 +45,10 @@
     <div class="row">
         <nav class="navbar navbar-light px-4">
             <div class="w-100 p-2">
-                <a class="navbar-brand text-white">
-                    <strong><u><i>C O A I </u> -
+                <a class="navbar-brand">
+                    <strong class="text-white"><u><i><a href="{% url 'index' %}" class="text-white">C O A I </a></u> -
                     {% if request.user.is_authenticated %}
-                    {{ user.name }}
+                    {{ user.username }}
                     {% else %}
                     Invitado
                     {% endif %}
