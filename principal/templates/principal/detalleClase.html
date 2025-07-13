@@ -1,0 +1,61 @@
+{% extends "plataforma/menu.html" %}
+
+{% block contenido %}
+<div>
+    <div class="row">
+        <div class="col-md-8">
+             <h1>Clase 1A</h1>
+             <h4><i>Tareas asignadas</i></h4>
+             <br>        
+         </div>
+
+         
+         <div class="col-md-4">
+           <div class="d-grid m-3"> 
+            <button type="button" class="btn btn-success p-3">Agregar alumno</button>
+        </div>
+         </div>
+
+         
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="card border-2 border-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Tarea 1</h5>
+                            <p class="card-text">Descripción de la tarea 1...</p>
+                            <a href="#" class="card-link float-end">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <div class="col-12 mb-3">
+                    <div class="card border-2 border-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Tarea 2</h5>
+                            <p class="card-text">Descripción de la tarea 2...</p>
+                            <a href="#" class="card-link float-end">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+                               
+            </div>
+        </div>
+        
+        
+        <div class="col-md-4">
+            <div class="card border-2 border-success sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">Alumnos</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">Alumno 1</li>
+                        <li class="mb-2">Alumno 2</li>
+                        <li class="mb-2">Alumno 3</li>                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

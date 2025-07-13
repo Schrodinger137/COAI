@@ -1,0 +1,46 @@
+{% extends "plataforma/menu.html" %}
+
+{%block contenido%}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Tareas</h1>
+        <br>
+    </div>
+
+
+    <div class="col-md-4">
+        <div class="d-flex justify-content-between align-items-center m-3">
+            <label class="form-check-label" for="flexSwitchCheckChecked">Mostrar todas las tareas</label>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
+            <div class="card border-2 border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Título</h5>
+                    <p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
+                        vulputate eu pharetra nec, mattis ac neque. </p>
+                    <a href="#" class="card-link float-end">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
+            <div class="card border-2 border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Título</h5>
+                    <p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
+                        vulputate eu pharetra nec, mattis ac neque. </p>
+                    <a href="#" class="card-link float-end">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{%endblock%}

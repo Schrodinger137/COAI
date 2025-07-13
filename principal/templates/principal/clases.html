@@ -7,18 +7,19 @@
             <h1>Clases</h1>
         </div>
         <div class="col"></div>
-        <div class="col"> 
-            <a href="" class="btn sidebar-button w-50">Agregar clase</a>
+         <div class="col-md-4">
+           <div class="d-grid m-3"> 
+            <button type="button" class="btn btn-success p-3">Agregar clase</button>
         </div>
+         </div>
     </div>
-    <div class="row">
-        <h3>Clase 1</h3>
-        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
+    <div class="row">        
+        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->            
             <div class="card border-2 border-success">
                 <div class="card-body">
-                    <h5 class="card-title">Título</h5>
+                    <h5 class="card-title">Clase 1A</h5>
                     <p class="card-text">Contenido...</p>
-                    <a href="#" class="card-link float-end">Ver más</a>
+                    <a href="{% url 'detalleClase' %}" class="card-link float-end">Ver más</a>
                 </div>
             </div>
         </div>

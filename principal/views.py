@@ -59,3 +59,9 @@ def profesores(request):
         'profesores': lista_profesores,
     }
     return render(request, 'principal/profesores.html', context)
+
+def tareas(request):
+    return render(request, 'principal/vistaTareas.html')
+
+def detalleClase(request):
+    return render(request, 'principal/detalleClase.html')
