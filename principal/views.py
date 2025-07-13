@@ -4,8 +4,8 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from .forms import ProfesorRegistrationForm
-from .models import Profesor, Clase # Asegúrate de importar tus modelos
+from .forms import ProfesorRegistrationForm,ClaseForm
+from .models import Profesor, Clase
 
 # Create your views here.
 
@@ -35,8 +35,6 @@ def log_out(request):
     logout(request)
     return redirect('index')
 
-def clases(request):
-    return render(request, 'principal/clases.html')
 
 def profesores(request):
     form = ProfesorRegistrationForm()
@@ -65,3 +63,23 @@ def tareas(request):
 
 def detalleClase(request):
     return render(request, 'principal/detalleClase.html')
+
+def clases(request):
+    clases = Clase.objects.all()
+    form = ClaseForm()
+
+    if request.method == 'POST':
+        form = ClaseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Clase registrada')
+            return redirect('clases') # Redirige el modal a la misma vista
+        else:
+            messages.error(request, 'Error al registrar la clase')
+
+    context = {
+        'clases': clases,
+        'form': form, #pasamos el form al contexto
+    }
+    return render(request, 'principal/clases.html', context)
+

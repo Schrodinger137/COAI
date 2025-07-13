@@ -39,7 +39,6 @@
                             <p class="card-text">Correo: {{ profesor.user.email }}</p>
                             <p class="card-text">Teléfono: {{ profesor.telefono|default:"N/A" }}</p>
                             <p class="card-text"><small class="text-muted">Registrado: {{ profesor.created_at|date:"d M Y H:i" }}</small></p>
-                            {# Opcional: Mostrar clases que imparte este profesor #}
                             {% if profesor.clases_impartidas.all %}
                                 <h6>Clases Asignadas:</h6>
                                 <ul>
@@ -50,7 +49,7 @@
                             {% else %}
                                 <p><small class="text-muted">Aún no tiene clases asignadas.</small></p>
                             {% endif %}
-                            {# Puedes añadir botones de editar/eliminar aquí si es necesario #}
+                            {# pendiente añadir botones de editar/eliminar #}
                         </div>
                     </div>
                 </div>

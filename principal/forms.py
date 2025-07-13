@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profesor
+from .models import Profesor,Clase
 
 class ProfesorRegistrationForm(forms.ModelForm):
     # Campos para el modelo User
@@ -89,3 +89,17 @@ class ProfesorRegistrationForm(forms.ModelForm):
             profesor.save()
 
         return profesor
+class ClaseForm(forms.ModelForm):
+    class Meta:
+        model = Clase
+        fields = ['nombre', 'descripcion', 'profesor']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la Clase'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción'}),
+            'profesor': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'nombre': 'Nombre de la Clase',
+            'descripcion': 'Descripción',
+            'profesor': 'Profesor Asignado',
+        }
