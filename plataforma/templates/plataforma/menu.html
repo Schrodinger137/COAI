@@ -17,36 +17,59 @@
         .navbar {
             background-color: #72bb53 !important;
         }
+
+        .sidebar-button {
+            width: 100%;
+            margin-bottom: 10px;
+            background-color: #72bb53;
+            border: none;
+            color: white;
+        }
+
+        .sidebar-button:hover {
+            background-color: #5ca642;
+        }
+
+        /* Clase personalizada para ancho intermedio */
+        @media (min-width: 992px) {
+            .col-lg-custom {
+                flex: 0 0 14%;
+                max-width: 14%;
+            }
+        }
     </style>
 </head>
 
 <body class="container-fluid">
     <div class="row">
-        <nav class="navbar navbar-light bg-light ps-5">
-            <div class="container-fluid p-2">
-                <a class="navbar-brand text-white "><strong><u><i>C O A I </u>-
-                        {% block usuario_logeado %}{% endblock %}
-                        </i> </strong></a>
+        <nav class="navbar navbar-light px-4">
+            <div class="w-100 p-2">
+                <a class="navbar-brand text-white">
+                    <strong><u><i>C O A I </u> -
+                    {% if request.user.is_authenticated %}
+                    {{ user.name }}
+                    {% else %}
+                    Invitado
+                    {% endif %}
+                    </i></strong>
+                </a>
             </div>
         </nav>
-        <!-- Barra de menú -->
-        <div class="sidebar col-md-3 col-lg-2 p-0">
-            <div class="p-3">
-                {% block menu %}{%endblock%}
-            </div>
+
+        <!-- Sidebar con ancho personalizado -->
+        <div class="sidebar col-md-2 col-lg-custom p-3">
+            <a href="{% url 'index' %}">
+                <button class="btn sidebar-button">Index</button>
+            </a>
+            <a href="{% url 'ejemplo' %}">
+                <button class="btn sidebar-button">Ejemplo</button>
+            </a>
         </div>
-        <!-- /sidebar -->
 
-
-        <!-- Contenido Principal-->
-        <div class="col-md-9 col-lg-10 p-4">
-            {%block contenido%}{%endblock%}
-
+        <!-- Contenido principal -->
+        <div class="col-md-10 col-lg p-4">
+            {% block contenido %}{% endblock %}
         </div>
-    </div>
-    <!-- /Contenido Principal-->
-
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

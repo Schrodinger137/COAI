@@ -1,24 +1,34 @@
 {% extends "plataforma/menu.html" %}
 
-{% block usuario_logeado %}INVITADO{% endblock %}
-
-{% block menu %}
-<ul class="nav flex-column">
-    <hr>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}">Index</a>
-    </li>
-    <hr>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'ejemplo' %}">Ejemplo</a>
-    </li>
-    <hr>
-</ul>
-{% endblock %}
-
 {% block contenido %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>index</h3>
-    <!-- Aquí puedes añadir más contenido específico -->
+<div class="mb-4">
+    <h3>Jardín de Niños COAI</h3>
+</div>
+
+<div class="d-flex gap-4">
+    <img src="https://www.coldelvalle.edu.mx/wp-content/uploads/2021/10/2.-Ki%CC%81nder-o-preescolar-1-1536x831.jpg"
+        alt="Imagen del kinder" style="width: 60%; height: auto;">
+
+    <div>
+        <div class="card border-2 border-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Iniciar Sesión</h5>
+                <br>
+                <form>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <button type="submit" class="btn sidebar-button">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
