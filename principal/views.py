@@ -3,6 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.models import Group
+from .forms import ProfesorRegistrationForm
+from .models import Profesor, Clase # Asegúrate de importar tus modelos
+
 # Create your views here.
 
 
@@ -30,3 +34,28 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect('index')
+
+def clases(request):
+    return render(request, 'principal/clases.html')
+
+def profesores(request):
+    form = ProfesorRegistrationForm()
+    if request.method == 'POST':
+        form = ProfesorRegistrationForm(request.POST)
+        if form.is_valid():
+            profesor = form.save()#crear el profe, asignarlo al user
+            #corrobora si hay un grupo profesores, si no crearlo
+            profesores_group, created = Group.objects.get_or_create(name='Profesores')
+            if created:
+                messages.info(request, "se ha creado el grupo profesores")
+            profesor.user.groups.add(profesores_group)
+            messages.success(request, f'El profesor {profesor.nombre} ha sido registrado exitosamente.')
+            return redirect('profesores')
+        else:
+            messages.error(request, 'Hubo un error al registrar el profesor. Por favor, revisa los datos en el formulario.')
+    lista_profesores = Profesor.objects.all().order_by('-created_at')
+    context = {
+        'form': form,
+        'profesores': lista_profesores,
+    }
+    return render(request, 'principal/profesores.html', context)

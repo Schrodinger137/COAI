@@ -1,0 +1,102 @@
+{% extends "plataforma/menu.html" %}
+{% block contenido %}
+<div class="container-fluid"> 
+    <div class="row mb-4 align-items-center"> 
+        <div class="col-md-6">
+            <h1>Profesores</h1>
+        </div>
+        <div class="col-md-6 text-end"> {# Columna para el botón alineado a la derecha #}
+            {# Botón que abre el modal #}
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registrarProfesorModal">
+                <i class="fas fa-user-plus"></i> Agregar Profesor
+            </button>
+        </div>
+    </div>
+
+   {# Mensajes de Django #}
+    {% if messages %}
+        <div class="my-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <hr>
+
+     {# lista de profes #}
+    <h2> Profesores</h2>
+    <div class="row">
+        {% if profesores %}
+            {% for profesor in profesores %}
+                <div class="col-xl-4 col-lg-6 col-md-12 mb-4">
+                    <div class="card border-2 border-success h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Profesor: <span class="text-muted">{{ profesor.nombre }}</span></h5>
+                            <p class="card-text">Correo: {{ profesor.user.email }}</p>
+                            <p class="card-text">Teléfono: {{ profesor.telefono|default:"N/A" }}</p>
+                            <p class="card-text"><small class="text-muted">Registrado: {{ profesor.created_at|date:"d M Y H:i" }}</small></p>
+                            {# Opcional: Mostrar clases que imparte este profesor #}
+                            {% if profesor.clases_impartidas.all %}
+                                <h6>Clases Asignadas:</h6>
+                                <ul>
+                                    {% for clase in profesor.clases_impartidas.all %}
+                                        <li>{{ clase.nombre }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p><small class="text-muted">Aún no tiene clases asignadas.</small></p>
+                            {% endif %}
+                            {# Puedes añadir botones de editar/eliminar aquí si es necesario #}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="col-12">No hay profesores registrados aún.</p>
+        {% endif %}
+    </div>
+</div>
+{# modal de profesores con boostrap #}
+<div class="modal fade" id="registrarProfesorModal" tabindex="-1" aria-labelledby="registrarProfesorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrarProfesorModalLabel">Registrar Profesor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'profesores' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
