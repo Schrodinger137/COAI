@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User # Importamos el modelo User de Django para asociarlo con el profe
 from django.utils import timezone
+
 class Profesor(models.Model):
     #vamos a asignar un usuario de django al modelo profesor
     user = models.OneToOneField(
