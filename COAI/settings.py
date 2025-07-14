@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,22 @@ INSTALLED_APPS = [
     'principal',
     'plataforma'
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "COAL - ADMIN",
+    "site_header": "COAL - ADMINISTRADOR",
+    "site_brand": "COAL",
+    "welcome_sign": "Bienvenido al panel administrativo de COAL",
+    "site_logo": None,  # O usa una ruta a tu logo si lo tienes
+    "primary_color": "#68b65b",  # verde claro
+    "accent": "#3e8e41",
+    "button_classes": {
+        "submit": "btn btn-success",
+        "delete": "btn btn-danger",
+    },
+    "order_with_respect_to": ["plataforma", "principal"],  # orden de tus apps
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
