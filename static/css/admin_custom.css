@@ -1,0 +1,49 @@
+/* Fondo de la barra lateral */
+.main-sidebar {
+    background-color: #e5ffd0 !important;
+}
+
+/* Botones activos del sidebar */
+.nav-sidebar .nav-link.active {
+    background-color: #72bb53 !important;
+    color: white !important;
+}
+
+/* Botones del sidebar al pasar el mouse */
+.nav-sidebar .nav-link:hover {
+    background-color: #5ca642 !important;
+    color: white !important;
+}
+
+/* Barra superior (header admin) */
+.main-header {
+    background-color: #72bb53 !important;
+    color: white !important;
+}
+
+.main-header .nav-link, .main-header .navbar-brand {
+    color: white !important;
+}
+
+/* Botón de cerrar sesión */
+.logout-link {
+    background-color: #ff9561 !important;
+    color: white !important;
+    border: none;
+}
+
+.logout-link:hover {
+    background-color: #ff7a3d !important;
+    color: white !important;
+}
+
+/* Botones generales */
+.btn-success {
+    background-color: #72bb53 !important;
+    border-color: #5ca642 !important;
+}
+
+.btn-success:hover {
+    background-color: #5ca642 !important;
+    border-color: #4d913a !important;
+}
