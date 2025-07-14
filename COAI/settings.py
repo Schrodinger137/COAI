@@ -41,22 +41,22 @@ INSTALLED_APPS = [
     'principal',
     'plataforma'
 ]
-
 JAZZMIN_SETTINGS = {
-    "site_title": "COAL - ADMIN",
-    "site_header": "COAL - ADMINISTRADOR",
-    "site_brand": "COAL",
-    "welcome_sign": "Bienvenido al panel administrativo de COAL",
-    "site_logo": None,  # O usa una ruta a tu logo si lo tienes
-    "primary_color": "#68b65b",  # verde claro
+    "site_title": "COAI - ADMIN",
+    "site_header": "COAI - ADMINISTRADOR",
+    "site_brand": "COAI",
+    "welcome_sign": "Bienvenido al panel administrativo de COAI",
+    "site_logo": None,
+    "primary_color": "#68b65b",
     "accent": "#3e8e41",
+    "theme": "minty",  # opcional, ya no afecta mucho con CSS personalizado
+    "custom_css": "css/admin_custom.css",  # 👈 archivo personalizado
     "button_classes": {
         "submit": "btn btn-success",
         "delete": "btn btn-danger",
     },
-    "order_with_respect_to": ["plataforma", "principal"],  # orden de tus apps
+    "order_with_respect_to": ["plataforma", "principal"],
 }
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -122,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'UTC'
 
@@ -135,6 +135,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # 👈 Esto es necesario si estás usando una carpeta "static/" al nivel de manage.py
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
