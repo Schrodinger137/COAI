@@ -41,18 +41,3 @@ class Clase(models.Model):
 
     def __str__(self):
         return self.nombre
-    
-class Alumno(models.Model):
-    nombre = models.CharField(max_length=100, verbose_name="Nombre del Alumno")
-    nombre_tutor = models.CharField(max_length=100, verbose_name="Nombre del Tutor")
-    telefono = models.CharField(max_length=20, blank=True, null=True, verbose_name="# Teléfono")
-    email = models.EmailField(unique=True, verbose_name="Correo Electrónico")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
-
-    class Meta:
-        verbose_name = "Alumno"
-        verbose_name_plural = "Alumnos"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return self.nombre

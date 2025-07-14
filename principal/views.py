@@ -1,11 +1,11 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from .forms import ProfesorRegistrationForm,ClaseForm
-from .models import Profesor, Clase, Alumno
+from .models import Profesor, Clase
 
 # Create your views here.
 
@@ -61,26 +61,14 @@ def profesores(request):
 def tareas(request):
     return render(request, 'principal/vistaTareas.html')
 
-def detalleClase(request):
-    return render(request, 'principal/detalleClase.html')
+def detalleClase(request, clase_id):
+    clase = get_object_or_404(Clase, id=clase_id)
+    return render(request, 'principal/detalleClase.html', {'clase': clase})
 
 def clases(request):
     clases = Clase.objects.all()
     form = ClaseForm()
-    alumnos = Alumno.objects.all() 
 
-    if request.method == 'POST':
-        # Verificar si es para registrar clase o asignar alumnos
-        if 'asignar_alumnos' in request.POST:
-            return asignar_alumnos(request)
-        else:
-            form = ClaseForm(request.POST)
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Clase registrada')
-                return redirect('clases')
-            
-    
     if request.method == 'POST':
         form = ClaseForm(request.POST)
         if form.is_valid():
@@ -92,7 +80,6 @@ def clases(request):
 
     context = {
         'clases': clases,
-        'alumnos': alumnos,
         'form': form, #pasamos el form al contexto
     }
     return render(request, 'principal/clases.html', context)
@@ -100,20 +87,3 @@ def clases(request):
 def agregar_tarea(request):
     return render(request, 'principal/agregarTarea.html')
 
-def asignar_alumnos(request):
-    if request.method == 'POST':
-        try:
-            clase_id = request.POST.get('clase_id')
-            alumnos_ids = request.POST.getlist('alumnos')
-            
-            clase = Clase.objects.get(id=clase_id)
-            alumnos = Alumno.objects.filter(id__in=alumnos_ids)
-            
-            # Asumiendo que tienes un ManyToManyField en tu modelo Clase
-            clase.alumnos.set(alumnos)
-            
-            messages.success(request, 'Alumnos asignados correctamente')
-        except Exception as e:
-            messages.error(request, f'Error al asignar alumnos: {str(e)}')
-    
-    return redirect('clases')

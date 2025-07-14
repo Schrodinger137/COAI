@@ -43,7 +43,7 @@
                                 {% endif %}
                             </p>
                             <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at|date:"d M Y H:i" }}</small></p>
-                          {# <a href="{% url 'detalleClase' clase.id %}" class="card-link float-end">Ver más</a> #}
+                          <a href="{% url 'detalleClase' clase.id %}" class="card-link float-end">Detalles de la clase</a>
                         </div>
                     </div>
                 </div>
@@ -94,63 +94,4 @@
         </div>
     </div>
 </div>
-
-{# Modal para asignar alumnos #}
-<div class="modal fade" id="asignarAlumnosModal" tabindex="-1" aria-labelledby="asignarAlumnosModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="asignarAlumnosModalLabel">Asignar Alumnos</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post" action="{% url 'asignar_alumnos' %}">
-                {% csrf_token %}
-                <input type="hidden" name="clase_id" id="clase_id_input">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Seleccionar Alumnos:</label>
-                        <select class="form-select" name="alumnos" multiple size="5">
-                            {% for alumno in alumnos %}
-                                <option value="{{ alumno.id }}">{{ alumno.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Asignar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-{# Botón para abrir el modal#}
-{% for clase in clases %}
-    <div class="col-xl-4 col-lg-6 col-md-12 mb-4">
-        <div class="card">
-            <!-- ... contenido de la tarjeta ... -->
-            <div class="card-footer">
-                <button type="button" class="btn btn-sm btn-outline-primary" 
-                        data-bs-toggle="modal" data-bs-target="#asignarAlumnosModal"
-                        onclick="document.getElementById('clase_id_input').value='{{ clase.id }}'">
-                    Asignar Alumnos
-                </button>
-            </div>
-        </div>
-    </div>
-{% endfor %}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Cuando se abre el modal, establece el ID de la clase
-    var asignarModal = document.getElementById('asignarAlumnosModal');
-    asignarModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var claseId = button.getAttribute('data-clase-id');
-        document.getElementById('clase_id_input').value = claseId;
-    });
-});
-</script>
-
 {% endblock %}
