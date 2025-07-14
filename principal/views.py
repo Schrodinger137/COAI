@@ -83,3 +83,6 @@ def clases(request):
     }
     return render(request, 'principal/clases.html', context)
 
+def agregar_tarea(request):
+    return render(request, 'principal/agregarTarea.html')
+

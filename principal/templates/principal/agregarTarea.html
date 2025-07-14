@@ -1,0 +1,55 @@
+{% extends "plataforma/menu.html" %}
+
+{% block contenido %}
+<div class="container-fluid">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h1>Agregar Tarea</h1>
+        </div>
+    </div>
+
+    {# Mensajes de Django #}
+    {% if messages %}
+        <div class="my-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <hr>
+    <form method="post" action="{% url 'agregar_tarea' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="grupo" class="form-label">Grupo</label>
+            <select class="form-select" id="grupo" name="grupo" required>
+                <option value="" disabled selected>Seleccione un grupo</option>
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre de la Actividad</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="fecha_entrega" class="form-label">Fecha de Entrega</label>
+            <input type="date" class="form-control" id="fecha_entrega" name="fecha_entrega" required>
+        </div>
+        <div class="mb-3">
+            <label for="archivo" class="form-label">Archivo (opcional)</label>
+            <input type="file" class="form-control" id="archivo" name="archivo">
+        </div>
+        <button type="submit" class="btn btn-success">Agregar Tarea</button>
+    </form>
+</div>
+{% endblock %}
+
