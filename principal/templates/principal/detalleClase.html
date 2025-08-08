@@ -1,18 +1,20 @@
 {% extends "plataforma/menu.html" %}
 
+{% block title %} Detalle: {{clase}} {% endblock %}
 {% block contenido %}
 <div>
     <div class="row">
         <div class="col-md-8">
-             <h1>Clase 1A</h1>
-             <h4><i>Tareas asignadas</i></h4>
-             <br>        
-         </div>
+            <h1>Clase 1A</h1>
+            <h4><i>Tareas asignadas</i></h4>
+            <br>
+        </div>
 
-         <div class="col-md-4">
+        <div class="col-md-4">
             <!-- Botón para abrir el modal -->
-            <div class="d-grid m-3"> 
-                <button type="button" class="btn btn-success p-3" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">
+            <div class="d-grid m-3">
+                <button type="button" class="btn btn-success p-3" data-bs-toggle="modal"
+                    data-bs-target="#agregarAlumnoModal">
                     Agregar alumno
                 </button>
             </div>
@@ -31,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-12 mb-3">
                     <div class="card border-2 border-success">
                         <div class="card-body">
@@ -40,10 +42,10 @@
                             <a href="#" class="card-link float-end">Ver más</a>
                         </div>
                     </div>
-                </div>                               
+                </div>
             </div>
         </div>
-        
+
         <!-- Lista de alumnos -->
         <div class="col-md-4">
             <div class="card border-2 border-success sticky-top" style="top: 20px;">
@@ -52,7 +54,7 @@
                     <ul class="list-unstyled">
                         <li class="mb-2">Alumno 1</li>
                         <li class="mb-2">Alumno 2</li>
-                        <li class="mb-2">Alumno 3</li>                        
+                        <li class="mb-2">Alumno 3</li>
                     </ul>
                 </div>
             </div>
@@ -61,7 +63,8 @@
 </div>
 
 <!-- Modal para agregar alumno -->
-<div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoModalLabel" aria-hidden="true">
+<div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -96,4 +99,12 @@
         </div>
     </div>
 </div>
+
+{% if is_profesor %}
+<button class="btn btn-primary btn-lg rounded-circle shadow"
+    style="position: fixed; bottom: 20px; right: 20px; z-index: 1050;" data-bs-toggle="modal"
+    data-bs-target="#agregarAlumnoModal">
+    +
+</button>
+{% endif %}
 {% endblock %}

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from .forms import ProfesorRegistrationForm,ClaseForm
 from .models import Profesor, Clase
+from plataforma.models import KindUsers
 
 # Create your views here.
 
@@ -35,14 +36,14 @@ def log_out(request):
     logout(request)
     return redirect('index')
 
-
+@login_required
 def profesores(request):
+
     form = ProfesorRegistrationForm()
     if request.method == 'POST':
         form = ProfesorRegistrationForm(request.POST)
         if form.is_valid():
-            profesor = form.save()#crear el profe, asignarlo al user
-            #corrobora si hay un grupo profesores, si no crearlo
+            profesor = form.save()
             profesores_group, created = Group.objects.get_or_create(name='Profesores')
             if created:
                 messages.info(request, "se ha creado el grupo profesores")
@@ -62,8 +63,17 @@ def tareas(request):
     return render(request, 'principal/vistaTareas.html')
 
 def detalleClase(request, clase_id):
+    current_user = KindUsers.objects.filter(user=request.user).first()
+    if current_user:
+        is_profesor = current_user.kind.filter(rol='profesor').exists()
+    else:
+        is_profesor = False
     clase = get_object_or_404(Clase, id=clase_id)
-    return render(request, 'principal/detalleClase.html', {'clase': clase})
+    context = {
+        'clase':clase,
+        'is_profesor':is_profesor,
+    }
+    return render(request, 'principal/detalleClase.html', context)
 
 @login_required
 def clases(request):
