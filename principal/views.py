@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
@@ -61,8 +61,9 @@ def profesores(request):
 def tareas(request):
     return render(request, 'principal/vistaTareas.html')
 
-def detalleClase(request):
-    return render(request, 'principal/detalleClase.html')
+def detalleClase(request, clase_id):
+    clase = get_object_or_404(Clase, id=clase_id)
+    return render(request, 'principal/detalleClase.html', {'clase': clase})
 
 @login_required
 def clases(request):

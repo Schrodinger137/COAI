@@ -9,16 +9,19 @@
              <br>        
          </div>
 
-         
          <div class="col-md-4">
-           <div class="d-grid m-3"> 
-            <button type="button" class="btn btn-success p-3">Agregar alumno</button>
+            <!-- Botón para abrir el modal -->
+            <div class="d-grid m-3"> 
+                <button type="button" class="btn btn-success p-3" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">
+                    Agregar alumno
+                </button>
+            </div>
         </div>
-         </div>
 
-         
+        <!-- Contenido principal -->
         <div class="col-md-8">
             <div class="row">
+                <!-- Tus tarjetas de tareas existentes -->
                 <div class="col-12 mb-3">
                     <div class="card border-2 border-success">
                         <div class="card-body">
@@ -29,7 +32,6 @@
                     </div>
                 </div>
                 
-                
                 <div class="col-12 mb-3">
                     <div class="card border-2 border-success">
                         <div class="card-body">
@@ -38,12 +40,11 @@
                             <a href="#" class="card-link float-end">Ver más</a>
                         </div>
                     </div>
-                </div>
-                               
+                </div>                               
             </div>
         </div>
         
-        
+        <!-- Lista de alumnos -->
         <div class="col-md-4">
             <div class="card border-2 border-success sticky-top" style="top: 20px;">
                 <div class="card-body">
@@ -54,6 +55,43 @@
                         <li class="mb-2">Alumno 3</li>                        
                     </ul>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar alumno -->
+<div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="agregarAlumnoModalLabel">Registrar Nuevo Alumno</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nombreAlumno" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreAlumno" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombreTutor" class="form-label">Nombre del tutor</label>
+                        <input type="text" class="form-control" id="nombreTutor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefonoTutor" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefonoTutor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailAlumno" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="emailAlumno">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
