@@ -29,7 +29,7 @@ def log_in(request):
             messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
             return redirect('index')
 
-    return render(request, 'index')
+    return render(request, 'principal/index.html')
 
 def log_out(request):
     logout(request)
@@ -64,6 +64,7 @@ def tareas(request):
 def detalleClase(request):
     return render(request, 'principal/detalleClase.html')
 
+@login_required
 def clases(request):
     clases = Clase.objects.all()
     form = ClaseForm()
