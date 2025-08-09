@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profesor,Clase
+from .models import Profesor,Clase, Alumnos, Tareas
+from django.forms import ClearableFileInput
 
 class ProfesorRegistrationForm(forms.ModelForm):
     # Campos para el modelo User
@@ -102,4 +103,21 @@ class ClaseForm(forms.ModelForm):
             'nombre': 'Nombre de la Clase',
             'descripcion': 'Descripción',
             'profesor': 'Profesor Asignado',
+        }
+
+class AlumnosForm(forms.ModelForm):
+    class Meta:
+        model = Alumnos
+        fields = ['nombre', 'tutor', 'telefono', 'correo', 'password']
+
+
+class CustomClearableFileInput(ClearableFileInput):
+    template_with_clear = '<br> <label for="%(clear_checkbox_id)s">%(clear_checkbox_label)s</label> %(clear)s'        
+
+class TareasForm(forms.ModelForm):
+    class Meta:
+        model = Tareas
+        fields = ['clase', 'titulo', 'descripcion', 'fecha_entrega', 'archivo']
+        widgets={
+            'archivo': CustomClearableFileInput
         }

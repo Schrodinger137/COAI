@@ -24,25 +24,25 @@
         <div class="col-md-8">
             <div class="row">
                 <!-- Tus tarjetas de tareas existentes -->
+                {% for tarea in tareas %}
                 <div class="col-12 mb-3">
                     <div class="card border-2 border-success">
                         <div class="card-body">
-                            <h5 class="card-title">Tarea 1</h5>
-                            <p class="card-text">Descripción de la tarea 1...</p>
+                            <h5 class="card-title">{{tarea.titulo}}</h5>
+                            <p class="card-text">{{tarea.descripcion}}</p>
                             <a href="#" class="card-link float-end">Ver más</a>
                         </div>
                     </div>
                 </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        No hay tareas asignadas aún.
+                    </div>
+                </div>
+                {% endfor %}
 
-                <div class="col-12 mb-3">
-                    <div class="card border-2 border-success">
-                        <div class="card-body">
-                            <h5 class="card-title">Tarea 2</h5>
-                            <p class="card-text">Descripción de la tarea 2...</p>
-                            <a href="#" class="card-link float-end">Ver más</a>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
 
@@ -52,9 +52,11 @@
                 <div class="card-body">
                     <h5 class="card-title">Alumnos</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2">Alumno 1</li>
-                        <li class="mb-2">Alumno 2</li>
-                        <li class="mb-2">Alumno 3</li>
+                        {% for alumno in alumnos %}
+                        <li class="mb-2">{{ alumno.nombre }}</li>
+                        {% empty %}
+                        <li class="text-muted">No hay alumnos registrados</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -72,29 +74,39 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="{% url 'registroAlumnos' clase.id %}" method="post">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="nombreAlumno" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreAlumno" required>
+                        <input type="text" class="form-control" id="nombreAlumno" required name="nombre">
                     </div>
                     <div class="mb-3">
                         <label for="nombreTutor" class="form-label">Nombre del tutor</label>
-                        <input type="text" class="form-control" id="nombreTutor" required>
+                        <input type="text" class="form-control" id="nombreTutor" required name="tutor">
                     </div>
                     <div class="mb-3">
                         <label for="telefonoTutor" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoTutor" required>
+                        <input type="tel" class="form-control" id="telefonoTutor" required name="telefono">
                     </div>
                     <div class="mb-3">
                         <label for="emailAlumno" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="emailAlumno">
+                        <input type="email" class="form-control" id="emailAlumno" required name="correo">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" required name="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">Repetir contraseña</label>
+                        <input type="password" class="form-control" id="password_confirm" required
+                            name="password_confirm">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>

@@ -25,16 +25,16 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="grupo" class="form-label">Grupo</label>
-            <select class="form-select" id="grupo" name="grupo" required>
+            <select class="form-select" id="grupo" name="clase" required>
                 <option value="" disabled selected>Seleccione un grupo</option>
-                {% for grupo in grupos %}
+                {% for grupo in clases %}
                     <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la Actividad</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <input type="text" class="form-control" id="nombre" name="titulo" required>
         </div>
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>

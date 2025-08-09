@@ -19,28 +19,25 @@
     </div>
 
     <div class="row">
+        {% for tarea in tareas %}
         <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
             <div class="card border-2 border-success">
                 <div class="card-body">
-                    <h5 class="card-title">Título</h5>
-                    <p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
-                        vulputate eu pharetra nec, mattis ac neque. </p>
+                    <h5 class="card-title">{{tarea.titulo}}</h5>
+                    <p class="card-text">{{tarea.descripcion}} </p>
                     <a href="#" class="card-link float-end">Ver más</a>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
-            <div class="card border-2 border-success">
-                <div class="card-body">
-                    <h5 class="card-title">Título</h5>
-                    <p class="card-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
-                        vulputate eu pharetra nec, mattis ac neque. </p>
-                    <a href="#" class="card-link float-end">Ver más</a>
-                </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                No hay tareas registradas aún.
             </div>
         </div>
+        {% endfor %}
 
+        
 
     </div>
 </div>

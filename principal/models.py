@@ -41,3 +41,46 @@ class Clase(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Alumnos(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name="Nombre del Alumno")
+    tutor = models.CharField(max_length=100, verbose_name="Nombre del Tutor")
+    telefono = models.CharField(max_length=20, blank=True, null=True, verbose_name="Numero de Teléfono")
+    correo = models.EmailField(verbose_name="Correo Electrónico")
+    password = models.CharField(max_length=128, verbose_name="Contraseña")
+
+    clase = models.ForeignKey(
+        Clase,
+        on_delete=models.CASCADE,
+        verbose_name="Clase Inscrita"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
+
+    class Meta:
+        verbose_name = "Alumno"
+        verbose_name_plural = "Alumnos"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.nombre   
+
+class Tareas(models.Model):
+    titulo = models.CharField(max_length=100, verbose_name="Título de la Tarea")
+    descripcion = models.TextField(verbose_name="Descripción de la Tarea")
+    fecha_entrega = models.DateTimeField(verbose_name="Fecha de Entrega")
+    clase = models.ForeignKey(
+        Clase,
+        on_delete=models.CASCADE,
+        verbose_name="Clase Asociada"
+    )
+    archivo = models.FileField(upload_to="archivos", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
+
+    class Meta:
+        verbose_name = "Tarea"
+        verbose_name_plural = "Tareas"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.titulo
+         

@@ -4,8 +4,8 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from .forms import ProfesorRegistrationForm,ClaseForm
-from .models import Profesor, Clase
+from .forms import ProfesorRegistrationForm,ClaseForm, AlumnosForm, TareasForm
+from .models import Profesor, Clase, Alumnos, Tareas
 from plataforma.models import KindUsers
 
 # Create your views here.
@@ -60,7 +60,8 @@ def profesores(request):
     return render(request, 'principal/profesores.html', context)
 
 def tareas(request):
-    return render(request, 'principal/vistaTareas.html')
+    tareas = Tareas.objects.all().order_by('-created_at')
+    return render(request, 'principal/vistaTareas.html', {'tareas': tareas})
 
 def detalleClase(request, clase_id):
     current_user = KindUsers.objects.filter(user=request.user).first()
@@ -69,8 +70,12 @@ def detalleClase(request, clase_id):
     else:
         is_profesor = False
     clase = get_object_or_404(Clase, id=clase_id)
+    alumnos = Alumnos.objects.filter(clase=clase)
+    tareas = Tareas.objects.filter(clase=clase)
     context = {
         'clase':clase,
+        'alumnos': alumnos,
+        'tareas': tareas,
         'is_profesor':is_profesor,
     }
     return render(request, 'principal/detalleClase.html', context)
@@ -96,5 +101,35 @@ def clases(request):
     return render(request, 'principal/clases.html', context)
 
 def agregar_tarea(request):
-    return render(request, 'principal/agregarTarea.html')
+    clases = Clase.objects.all()
+    if request.method == 'POST':
+        form = TareasForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tarea registrada exitosamente.')
+            return redirect('tareas')
+        else:
+            messages.error(request, 'Error al registrar la tarea. Por favor, revisa los datos en el formulario.')
 
+    form = TareasForm()
+    return render(request, 'principal/agregarTarea.html', {'form': form, 'clases': clases})
+
+
+def registroAlumnos(request, clase_id):
+    
+    clase = get_object_or_404(Clase, id=clase_id)
+
+    if request.method == 'POST':
+        form = AlumnosForm(request.POST)
+        if form.is_valid():
+            alumno = form.save(commit=False)
+            alumno.clase = clase  # asigna la clase seleccionada
+            alumno.save()
+            messages.success(request, 'Alumno registrado')
+            return redirect('detalleClase', clase_id=clase.id)
+
+    form = AlumnosForm()
+    return render(request, 'principal/detalleClase.html', {'form': form, 'clase': clase})
+
+
+    
