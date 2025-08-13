@@ -29,6 +29,7 @@ urlpatterns = [
     path('clases/detalles/<int:clase_id>/', views.detalleClase, name='detalleClase'),
     path('profesores/', views.profesores, name='profesores'),
     path('tareas/', views.tareas, name='tareas'),
+    path('tareas/detalles/<int:tarea_id>/', views.detalleTarea, name='detalleTarea'),
     path('agregar-tarea/', views.agregar_tarea, name='agregar_tarea'),
     path('registroAlumnos/<int:clase_id>/', views.registroAlumnos , name='registroAlumnos')
 

@@ -63,6 +63,13 @@ def tareas(request):
     tareas = Tareas.objects.all().order_by('-created_at')
     return render(request, 'principal/vistaTareas.html', {'tareas': tareas})
 
+def detalleTarea(request, tarea_id):
+    tarea = get_object_or_404(Tareas, id=tarea_id)
+    context = {
+        'tarea': tarea,
+    }
+    return render(request, 'principal/detallesTarea.html', context)
+
 def detalleClase(request, clase_id):
     current_user = KindUsers.objects.filter(user=request.user).first()
     if current_user:

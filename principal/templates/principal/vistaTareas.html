@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{tarea.titulo}}</h5>
                     <p class="card-text">{{tarea.descripcion}} </p>
-                    <a href="#" class="card-link float-end">Ver más</a>
+                    <a href="{% url 'detalleTarea' tarea.id  %}" class="card-link float-end">Ver más</a>
                 </div>
             </div>
         </div>
