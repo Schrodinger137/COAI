@@ -41,6 +41,27 @@ class Clase(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Clase2(models.Model):
+    profesor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='clases_impartidas',
+        verbose_name="Profesor Asignado"
+    )
+    alumnos = models.ManyToManyField(
+        'plataforma.KindUsers',
+        related_name='clases_inscritas',
+        verbose_name="Alumnos Inscritos",
+        blank=True
+    )
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nombre
     
 class Alumnos(models.Model):
     nombre = models.CharField(max_length=100, verbose_name="Nombre del Alumno")
