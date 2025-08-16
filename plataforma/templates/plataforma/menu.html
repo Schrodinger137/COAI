@@ -106,6 +106,7 @@
             <a href="{% url 'agregar_tarea' %}">
                 <button class="btn sidebar-button">Agregar tareas</button>  
             </a>
+            {% include 'chat/chat_snippet.html' %}
         </div>
 
         <!-- Contenido principal -->
@@ -113,7 +114,6 @@
             {% block contenido %}{% endblock %}
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from .forms import ProfesorRegistrationForm,ClaseForm, AlumnosForm, TareasForm
 from .models import Profesor, Clase, Alumnos, Tareas
-from plataforma.models import KindUsers
+from plataforma.models import *
 
 # Create your views here.
 

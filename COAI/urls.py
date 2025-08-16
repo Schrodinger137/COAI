@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from plataforma import views as plat_views
 from principal import views
+from chat import views as chat_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,10 @@ urlpatterns = [
     path('tareas/', views.tareas, name='tareas'),
     path('tareas/detalles/<int:tarea_id>/', views.detalleTarea, name='detalleTarea'),
     path('agregar-tarea/', views.agregar_tarea, name='agregar_tarea'),
-    path('registroAlumnos/<int:clase_id>/', views.registroAlumnos , name='registroAlumnos')
+    path('registroAlumnos/<int:clase_id>/', views.registroAlumnos , name='registroAlumnos'),
 
+    path('chat/', chat_views.chat_window, name='chat_window'),
+    path('send_message/', chat_views.send_message, name='send_message'),
+    path('get_messages/', chat_views.get_messages, name='get_messages')
+    
 ]
