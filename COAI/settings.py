@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'principal',
-    'plataforma'
+    'plataforma',
+    'chat'
 ]
 JAZZMIN_SETTINGS = {
     "site_title": "COAI - ADMIN",
