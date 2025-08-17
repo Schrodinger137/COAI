@@ -4,7 +4,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from .forms import ProfesorRegistrationForm,ClaseForm, AlumnosForm, TareasForm
+from .forms import *
 from .models import Profesor, Clase, Alumnos, Tareas
 from plataforma.models import *
 
@@ -38,26 +38,44 @@ def log_out(request):
 
 @login_required
 def profesores(request):
-
-    form = ProfesorRegistrationForm()
     if request.method == 'POST':
-        form = ProfesorRegistrationForm(request.POST)
+        form = ProfesorRegistroForm(request.POST)
         if form.is_valid():
-            profesor = form.save()
-            profesores_group, created = Group.objects.get_or_create(name='Profesores')
-            if created:
-                messages.info(request, "se ha creado el grupo profesores")
-            profesor.user.groups.add(profesores_group)
-            messages.success(request, f'El profesor {profesor.nombre} ha sido registrado exitosamente.')
+            username = form.cleaned_data['username']
+            correo = form.cleaned_data['correo']
+            password = form.cleaned_data['password']
+
+            # Crear User
+            user = User.objects.create_user(
+                username=username,
+                email=correo,
+                password=password
+            )
+
+            # Crear KindUser
+            kind_user = KindUsers.objects.create(
+                user=user,
+                tel=form.cleaned_data.get('telefono', '')
+            )
+
+            # Asignar rol profesor
+            rol_profesor, created = Rol.objects.get_or_create(rol='profesor')
+            kind_user.kind.add(rol_profesor)
+
+            messages.success(request, f'El profesor {username} ha sido registrado correctamente.')
             return redirect('profesores')
         else:
-            messages.error(request, 'Hubo un error al registrar el profesor. Por favor, revisa los datos en el formulario.')
-    lista_profesores = Profesor.objects.all().order_by('-created_at')
+            messages.error(request, 'Error al registrar el profesor.')
+    else:
+        form = ProfesorRegistroForm()
+
+    lista_profesores = KindUsers.objects.filter(kind__rol='profesor')
     context = {
         'form': form,
         'profesores': lista_profesores,
     }
     return render(request, 'principal/profesores.html', context)
+
 
 def tareas(request):
     tareas = Tareas.objects.all().order_by('-created_at')
@@ -79,10 +97,12 @@ def detalleClase(request, clase_id):
     clase = get_object_or_404(Clase2, id=clase_id)
     tareas = Tareas.objects.filter(clase=clase)
     alumnos = clase.alumnos.all()
+    form = AlumnoRegistroForm()
     context = {
         'clase':clase,
         'tareas': tareas,
         'alumnos':alumnos,
+        'form':form,
         'is_profesor':is_profesor,
     }
     return render(request, 'principal/detalleClase.html', context)
@@ -123,21 +143,30 @@ def agregar_tarea(request):
 
 
 def registroAlumnos(request, clase_id):
-    
-    clase = get_object_or_404(Clase, id=clase_id)
+    clase = get_object_or_404(Clase2, id=clase_id)
 
     if request.method == 'POST':
-        form = AlumnosForm(request.POST)
+        form = AlumnoRegistroForm(request.POST)
         if form.is_valid():
-            alumno = form.save(commit=False)
-            alumno.clase = clase  # asigna la clase seleccionada
-            alumno.save()
-            messages.success(request, 'Alumno registrado')
+            username = form.cleaned_data['username']
+            correo = form.cleaned_data['correo']
+            password = form.cleaned_data['password']
+
+            user = User.objects.create_user(username=username, email=correo, password=password)
+            kind_user = KindUsers.objects.create(user=user, tel=form.cleaned_data.get('telefono', ''))
+            rol_alumno, created = Rol.objects.get_or_create(rol='alumno')
+            kind_user.kind.add(rol_alumno)
+            clase.alumnos.add(kind_user)
+
+            messages.success(request, 'Alumno registrado correctamente')
             return redirect('detalleClase', clase_id=clase.id)
+        else:
+            messages.error(request, 'Error al registrar el alumno')
 
-    form = AlumnosForm()
+    else:
+        form = AlumnoRegistroForm()
+
     return render(request, 'principal/detalleClase.html', {'form': form, 'clase': clase})
-
 
 def entregas(request):
     return render(request, 'principal/entregasTareas.html')    

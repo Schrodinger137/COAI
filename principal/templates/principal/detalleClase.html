@@ -76,32 +76,7 @@
             <div class="modal-body">
                 <form action="{% url 'registroAlumnos' clase.id %}" method="post">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nombreAlumno" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreAlumno" required name="nombre">
-                    </div>
-                    <div class="mb-3">
-                        <label for="nombreTutor" class="form-label">Nombre del tutor</label>
-                        <input type="text" class="form-control" id="nombreTutor" required name="tutor">
-                    </div>
-                    <div class="mb-3">
-                        <label for="telefonoTutor" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoTutor" required name="telefono">
-                    </div>
-                    <div class="mb-3">
-                        <label for="emailAlumno" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="emailAlumno" required name="correo">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" required name="password">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password_confirm" class="form-label">Repetir contraseña</label>
-                        <input type="password" class="form-control" id="password_confirm" required
-                            name="password_confirm">
-                    </div>
+                    {{ form.as_p }}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -111,6 +86,7 @@
         </div>
     </div>
 </div>
+
 
 {% if is_profesor %}
 <button class="btn btn-primary btn-lg rounded-circle shadow"
