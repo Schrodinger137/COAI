@@ -10,11 +10,13 @@
         <div class="col-md-4  text-end"> {# Columna para el botón alineado a la derecha #}
             {# Botón que abre el modal #}
             <div class="d-grid m-3">
-
+                {% if is_alumno %}
+                {% else %}
                 <button type="button" class="btn btn-success p-3" data-bs-toggle="modal"
                     data-bs-target="#registrarProfesorModal">
                     Agregar Profesor
                 </button>
+                {% endif %}
             </div>
         </div>
     </div>
