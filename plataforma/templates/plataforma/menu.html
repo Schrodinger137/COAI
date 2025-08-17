@@ -92,20 +92,11 @@
             <a href="{% url 'index' %}">
                 <button class="btn sidebar-button">Index</button>
             </a>
-            <a href="{% url 'ejemplo' %}">
-                <button class="btn sidebar-button">Ejemplo</button>
-            </a>
             <a href="{% url 'clases' %}">
                 <button class="btn sidebar-button">Clases</button>
             </a>
             <a href="{% url 'profesores' %}">
                 <button class="btn sidebar-button">Profesores</button>
-            </a>
-            <a href="{% url 'tareas' %}">
-                <button class="btn sidebar-button">Ver tareas</button>
-            </a>
-            <a href="{% url 'agregar_tarea' %}">
-                <button class="btn sidebar-button">Agregar tareas</button>
             </a>
             {% include 'chat/chat_snippet.html' %}
         </div>
