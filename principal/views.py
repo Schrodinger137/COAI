@@ -11,6 +11,7 @@ from functools import wraps
 
 # Create your views here.
 
+
 def agregar_roles(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
@@ -21,12 +22,17 @@ def agregar_roles(view_func):
         if request.user.is_authenticated:
             request.current_user = KindUsers.objects.filter(user=request.user).first()
             if request.current_user:
-                request.is_profesor = request.current_user.kind.filter(rol="profesor").exists()
-                request.is_alumno = request.current_user.kind.filter(rol="alumno").exists()
+                request.is_profesor = request.current_user.kind.filter(
+                    rol="profesor"
+                ).exists()
+                request.is_alumno = request.current_user.kind.filter(
+                    rol="alumno"
+                ).exists()
 
         return view_func(request, *args, **kwargs)
 
     return wrapper
+
 
 def index(request):
     return render(request, "principal/index.html")
@@ -64,7 +70,7 @@ def profesores(request):
         user = User.objects.create_user(
             username=form.cleaned_data["username"],
             email=form.cleaned_data["correo"],
-            password=form.cleaned_data["password"]
+            password=form.cleaned_data["password"],
         )
         kind_user = KindUsers.objects.create(
             user=user, tel=form.cleaned_data.get("telefono", "")
@@ -77,16 +83,18 @@ def profesores(request):
             clase_seleccionada.profesor = user
             clase_seleccionada.save()
 
-        messages.success(request, f"El profesor {user.username} ha sido registrado correctamente.")
+        messages.success(
+            request, f"El profesor {user.username} ha sido registrado correctamente."
+        )
         return redirect("profesores")
-    
+
     if request.user.is_superuser or request.is_profesor:
         lista_profesores = KindUsers.objects.filter(kind__rol="profesor")
     elif request.is_alumno:
         clases_alumno = Clase2.objects.filter(alumnos=request.current_user)
         lista_profesores = KindUsers.objects.filter(
             kind__rol="profesor",
-            user__in=clases_alumno.values_list("profesor", flat=True)
+            user__in=clases_alumno.values_list("profesor", flat=True),
         )
     else:
         lista_profesores = KindUsers.objects.none()
@@ -100,10 +108,48 @@ def profesores(request):
 
     return render(request, "principal/profesores.html", context)
 
+
 @login_required
 def tareas(request):
     tareas = Tareas.objects.all().order_by("-created_at")
     return render(request, "principal/vistaTareas.html", {"tareas": tareas})
+
+
+@agregar_roles
+@login_required
+def agregar_tarea(request, clase_id):
+    clase = get_object_or_404(Clase2, id=clase_id)
+
+    # Solo el profesor de la clase o superuser pueden agregar tareas
+    if (
+        not (request.is_profesor and request.current_user.user == clase.profesor)
+        and not request.user.is_superuser
+    ):
+        messages.error(request, "No tienes permiso para agregar tareas a esta clase.")
+        return redirect("detalleClase", clase_id=clase.id)
+
+    if request.method == "POST":
+        form = TareasForm(request.POST, request.FILES)
+        if form.is_valid():
+            tarea = form.save(commit=False)
+            tarea.clase = clase  # Aseguramos que la tarea quede vinculada a la clase
+            tarea.save()
+            messages.success(request, f"Tarea '{tarea.titulo}' agregada correctamente.")
+            return redirect("detalleClase", clase_id=clase.id)
+        else:
+            messages.error(request, "Error al agregar la tarea. Revisa los datos.")
+    else:
+        form = TareasForm(initial={"clase": clase})
+
+    context = {
+        "form": form,
+        "clase": clase,
+        "is_profesor": request.is_profesor,
+        "is_alumno": request.is_alumno,
+    }
+
+    return render(request, "principal/agregarTarea.html", context)
+
 
 @agregar_roles
 @login_required
@@ -122,11 +168,11 @@ def detalleTarea(request, tarea_id):
 @login_required
 def detalleClase(request, clase_id):
     clase = get_object_or_404(Clase2, id=clase_id)
-    
+
     if not (request.is_profesor or request.is_alumno or request.user.is_superuser):
         messages.error(request, "No tienes acceso a esta clase.")
         return redirect("clases")
-    
+
     if request.is_alumno and request.current_user not in clase.alumnos.all():
         messages.error(request, "No puedes ver esta clase.")
         return redirect("clases")
@@ -146,6 +192,7 @@ def detalleClase(request, clase_id):
         "is_alumno": request.is_alumno,
     }
     return render(request, "principal/detalleClase.html", context)
+
 
 @login_required
 @agregar_roles
@@ -178,6 +225,7 @@ def clases(request):
     }
 
     return render(request, "principal/clases.html", context)
+
 
 @login_required
 def registroAlumnos(request, clase_id):
@@ -212,39 +260,44 @@ def registroAlumnos(request, clase_id):
         request, "principal/detalleClase.html", {"form": form, "clase": clase}
     )
 
+
 @login_required
 def entregas(request):
     entregas = Entrega.objects.all()
-    return render('')
+    return render("")
+
 
 @login_required
 def entregar_tarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
-    alumno = KindUsers.objects.filter(user=request.user).first() 
+    alumno = KindUsers.objects.filter(user=request.user).first()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EntregaForm(request.POST, request.FILES)
         if form.is_valid():
             entrega, created = Entrega.objects.update_or_create(
                 tarea=tarea,
                 alumno=alumno,
                 defaults={
-                    'archivo': form.cleaned_data['archivo'],
-                    'comentario': form.cleaned_data.get('comentario', '')
-                }
+                    "archivo": form.cleaned_data["archivo"],
+                    "comentario": form.cleaned_data.get("comentario", ""),
+                },
             )
             messages.success(request, "Tu entrega se ha registrado correctamente.")
-            return redirect('detalleTarea', tarea_id=tarea.id)
+            return redirect("detalleTarea", tarea_id=tarea.id)
         else:
-            messages.error(request, "Error al subir la entrega. Revisa los datos ingresados.")
+            messages.error(
+                request, "Error al subir la entrega. Revisa los datos ingresados."
+            )
     else:
         form = EntregaForm()
 
     context = {
-        'tarea': tarea,
-        'form': form,
+        "tarea": tarea,
+        "form": form,
     }
-    return render(request, 'principal/detallesTarea.html', context)
+    return render(request, "principal/detallesTarea.html", context)
+
 
 @login_required
 def eliminar_tarea(request, tarea_id):

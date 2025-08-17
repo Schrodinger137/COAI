@@ -31,6 +31,7 @@ urlpatterns = [
     path('clases/detalles/<int:clase_id>/', views.detalleClase, name='detalleClase'),
     path('profesores/', views.profesores, name='profesores'),
     path('tareas/', views.tareas, name='tareas'),
+    path('clase/<int:clase_id>/agregar-tarea/', views.agregar_tarea, name='agregar_tarea'),
     path('tareas/detalles/<int:tarea_id>/', views.detalleTarea, name='detalleTarea'),
     path('entregar_tarea/<int:tarea_id>/', views.entregar_tarea, name='entregar_tarea'),
     path('entregas', views.entregas, name='entregas'),
