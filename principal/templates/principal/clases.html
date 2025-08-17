@@ -41,13 +41,12 @@
                     <p class="card-text">Descripción: {{ clase.descripcion|default:"N/A" }}</p>
                     <p class="card-text">Profesor Asignado:
                         {% if clase.profesor %}
-                        {{ clase.profesor.nombre }}
+                        {{ clase.profesor }}
                         {% else %}
                         <span class="text-muted">Sin asignar</span>
                         {% endif %}
                     </p>
-                    <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at|date:"d M Y H:i"
-                            }}</small></p>
+                    <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at}}</small></p>
                     <a href="{% url 'detalleClase' clase.id %}" class="card-link float-end">Detalles de la clase</a>
                 </div>
             </div>

@@ -53,7 +53,7 @@
                     <h5 class="card-title">Alumnos</h5>
                     <ul class="list-unstyled">
                         {% for alumno in alumnos %}
-                        <li class="mb-2">{{ alumno.nombre }}</li>
+                        <li class="mb-2">{{ alumno }}</li>
                         {% empty %}
                         <li class="text-muted">No hay alumnos registrados</li>
                         {% endfor %}

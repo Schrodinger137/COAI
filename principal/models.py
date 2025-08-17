@@ -90,7 +90,7 @@ class Tareas(models.Model):
     descripcion = models.TextField(verbose_name="Descripción de la Tarea")
     fecha_entrega = models.DateTimeField(verbose_name="Fecha de Entrega")
     clase = models.ForeignKey(
-        Clase,
+        Clase2,
         on_delete=models.CASCADE,
         verbose_name="Clase Asociada"
     )

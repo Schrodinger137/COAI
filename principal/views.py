@@ -76,20 +76,20 @@ def detalleClase(request, clase_id):
         is_profesor = current_user.kind.filter(rol='profesor').exists()
     else:
         is_profesor = False
-    clase = get_object_or_404(Clase, id=clase_id)
-    alumnos = Alumnos.objects.filter(clase=clase)
+    clase = get_object_or_404(Clase2, id=clase_id)
     tareas = Tareas.objects.filter(clase=clase)
+    alumnos = clase.alumnos.all()
     context = {
         'clase':clase,
-        'alumnos': alumnos,
         'tareas': tareas,
+        'alumnos':alumnos,
         'is_profesor':is_profesor,
     }
     return render(request, 'principal/detalleClase.html', context)
 
 @login_required
 def clases(request):
-    clases = Clase.objects.all()
+    clases = Clase2.objects.all()
     form = ClaseForm()
 
     if request.method == 'POST':
