@@ -12,22 +12,20 @@
             </div>
         </div>
 
-        <div class="col-md-5">
+<div class="col-md-5">
             <div class="card border-2 border-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Subir tarea</h5>
-                    <form enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input class='form-control' name="tareaEntrega" id="" type="file" />
-                        </div>
+                    <form method="post" enctype="multipart/form-data" action="{% url 'entregar_tarea' tarea.id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
                         <button type="submit" class="btn sidebar-button">Enviar</button>
                     </form>
                 </div>
             </div>
             <br>
-            <a type="submit" class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas </a>
-            <button type="submit" class="btn boton-naranja" data-bs-toggle="modal"
-                data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
+            <a class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas</a>
+            <button type="button" class="btn boton-naranja" data-bs-toggle="modal" data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
         </div>
         <br>
         <div class="col-md-7">

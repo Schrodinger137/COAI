@@ -132,3 +132,9 @@ class TareasForm(forms.ModelForm):
             'fecha_entrega': 'Fecha de entrega',
             'archivo': 'Archivo adjunto',
         }
+
+
+class EntregaForm(forms.ModelForm):
+    class Meta:
+        model = Entrega
+        fields = ['archivo', 'comentario']

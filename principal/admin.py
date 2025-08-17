@@ -36,3 +36,7 @@ class TareasAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     readonly_fields = ('created_at',)
 admin.site.register(Tareas, TareasAdmin)    
+
+@admin.register(Entrega)
+class EntregaAdmin(admin.ModelAdmin):
+    list_display = ('alumno', 'comentario', 'archivo', 'fecha_entrega')

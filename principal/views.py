@@ -150,26 +150,6 @@ def clases(request):
     return render(request, "principal/clases.html", context)
 
 
-def agregar_tarea(request):
-    clases = Clase.objects.all()
-    if request.method == "POST":
-        form = TareasForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Tarea registrada exitosamente.")
-            return redirect("tareas")
-        else:
-            messages.error(
-                request,
-                "Error al registrar la tarea. Por favor, revisa los datos en el formulario.",
-            )
-
-    form = TareasForm()
-    return render(
-        request, "principal/agregarTarea.html", {"form": form, "clases": clases}
-    )
-
-
 def registroAlumnos(request, clase_id):
     clase = get_object_or_404(Clase2, id=clase_id)
 
@@ -202,9 +182,39 @@ def registroAlumnos(request, clase_id):
         request, "principal/detalleClase.html", {"form": form, "clase": clase}
     )
 
-
+@login_required
 def entregas(request):
-    return render(request, "principal/entregasTareas.html")
+    entregas = Entrega.objects.all()
+    return render('')
+
+@login_required
+def entregar_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tareas, id=tarea_id)
+    alumno = KindUsers.objects.filter(user=request.user).first() 
+
+    if request.method == 'POST':
+        form = EntregaForm(request.POST, request.FILES)
+        if form.is_valid():
+            entrega, created = Entrega.objects.update_or_create(
+                tarea=tarea,
+                alumno=alumno,
+                defaults={
+                    'archivo': form.cleaned_data['archivo'],
+                    'comentario': form.cleaned_data.get('comentario', '')
+                }
+            )
+            messages.success(request, "Tu entrega se ha registrado correctamente.")
+            return redirect('detalleTarea', tarea_id=tarea.id)
+        else:
+            messages.error(request, "Error al subir la entrega. Revisa los datos ingresados.")
+    else:
+        form = EntregaForm()
+
+    context = {
+        'tarea': tarea,
+        'form': form,
+    }
+    return render(request, 'principal/detallesTarea.html', context)
 
 
 def eliminar_tarea(request, tarea_id):

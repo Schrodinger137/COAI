@@ -42,4 +42,30 @@ class Tareas(models.Model):
 
     def __str__(self):
         return self.titulo
-         
+
+
+class Entrega(models.Model):
+    tarea = models.ForeignKey(
+        Tareas,
+        on_delete=models.CASCADE,
+        related_name="entregas",
+        verbose_name="Tarea"
+    )
+    alumno = models.ForeignKey(
+        'plataforma.KindUsers',
+        on_delete=models.CASCADE,
+        related_name="entregas",
+        verbose_name="Alumno"
+    )
+    archivo = models.FileField(upload_to="entregas", verbose_name="Archivo de entrega")
+    comentario = models.TextField(blank=True, null=True, verbose_name="Comentario del alumno")
+    fecha_entrega = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de entrega")
+
+    class Meta:
+        verbose_name = "Entrega"
+        verbose_name_plural = "Entregas"
+        ordering = ["-fecha_entrega"]
+        unique_together = ('tarea', 'alumno')  # Cada alumno solo puede entregar una vez
+
+    def __str__(self):
+        return f"{self.alumno} - {self.tarea.titulo}"
