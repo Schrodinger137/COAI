@@ -2,64 +2,50 @@
 {% block title %} Inicio {% endblock %}
 {% block contenido %}
 
-
 <div class="mb-4">
     <h1>Tarea: {{tarea.titulo}}</h1>
-
     <br>
     <div class="row">
         <div class="col-md-7">
             <div>
                 <p style="text-align:justify">{{tarea.descripcion}} </p>
             </div>
-
         </div>
 
-
         <div class="col-md-5">
-
-
-            <!-- PARA PERFIL DEL PADRE -->
             <div class="card border-2 border-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Subir tarea</h5>
-                    <form>
-
+                    <form enctype="multipart/form-data">
                         <div class="mb-3">
-                            <input class='form-control' name="" id="" type="file" />
+                            <input class='form-control' name="tareaEntrega" id="" type="file" />
                         </div>
                         <button type="submit" class="btn sidebar-button">Enviar</button>
                     </form>
                 </div>
             </div>
-
             <br>
-
-            <!-- PARA EL PROFESOR  -->
-            <button type="submit" class="btn sidebar-button">Ver entregas </button>
-            <button type="submit" class="btn boton-naranja">Eliminar tarea</button>
-
+            <a type="submit" class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas </a>
+            <button type="submit" class="btn boton-naranja" data-bs-toggle="modal"
+                data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
         </div>
         <br>
-
         <div class="col-md-7">
             <h1>Material</h1>
-
-            <!-- si no hay matrial -->
-            <div class="alert alert-warning" role="alert">
-                <h4 class="alert-heading">No se agrego ningun material para esta tarea.</h4>
-            </div>
-
-
-            <!-- si si lo hay -->
-            <p>aqui va el archivo, pero esta trabajandose ese diseño</p>
-
+                       {% if tarea.archivo %}
+                        <div class="alert alert-info" role="alert">
+                            <p>Se ha adjuntado un archivo para esta tarea. Puedes descargarlo haciendo clic en el botón.</p>
+                            <a href="{{ tarea.archivo.url }}" class="btn btn-primary" download>Descargar archivo</a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning" role="alert">
+                            <h4 class="alert-heading">No se agregó ningún material para esta tarea.</h4>
+                        </div>
+                    {% endif %}
         </div>
-
     </div>
-
     <div class="col-md-9">
-        <h1>Blog de dugas</h1>
+        <h1>Blog de dudas</h1>
         <p>En esta sección se pueden agregar comentarios o preguntas sobre la tarea.</p>
 
         <div class="container my-5" style="margin: 2rem;">
@@ -97,6 +83,32 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmacionEliminar" tabindex="-1" aria-labelledby="confirmacionEliminarLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmacionEliminarLabel">¿Estás seguro de que deseas eliminar esta tarea?
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'eliminar_tarea' tarea.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <p>Esta acción no se puede deshacer.</p>
+                        <input type="hidden" name="tarea_id" value="{{ tarea.id }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

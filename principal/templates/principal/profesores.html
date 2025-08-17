@@ -3,14 +3,18 @@
 {% block contenido %}
 <div class="container-fluid"> 
     <div class="row mb-4 align-items-center"> 
-        <div class="col-md-6">
+        <div class="col-md-8">
             <h1>Profesores</h1>
         </div>
-        <div class="col-md-6 text-end"> {# Columna para el botón alineado a la derecha #}
+
+        <div class="col-md-4  text-end"> {# Columna para el botón alineado a la derecha #}
             {# Botón que abre el modal #}
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registrarProfesorModal">
-                <i class="fas fa-user-plus"></i> Agregar Profesor
-            </button>
+            <div class="d-grid m-3">
+
+                <button type="button" class="btn btn-success p-3" data-bs-toggle="modal" data-bs-target="#registrarProfesorModal">
+                    Agregar Profesor
+                </button>
+            </div>
         </div>
     </div>
 

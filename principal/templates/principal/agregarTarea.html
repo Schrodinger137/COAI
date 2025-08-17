@@ -21,7 +21,7 @@
     {% endif %}
 
     <hr>
-    <form method="post" action="{% url 'agregar_tarea' %}">
+    <form method="post" action="{% url 'agregar_tarea' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="grupo" class="form-label">Grupo</label>

@@ -139,4 +139,19 @@ def registroAlumnos(request, clase_id):
     return render(request, 'principal/detalleClase.html', {'form': form, 'clase': clase})
 
 
+def entregas(request):
+    return render(request, 'principal/entregasTareas.html')    
+
+
+def eliminar_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tareas, id=tarea_id)
     
+    if request.method == 'POST':
+        tarea.delete()
+        messages.success(request, 'Tarea eliminada exitosamente.')
+        return redirect('tareas')
+    
+    context = {
+        'tarea': tarea,
+    }
+    return render(request, 'principal/eliminarTarea.html', context)
