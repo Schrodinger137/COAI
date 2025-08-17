@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from .forms import *
-from .models import Profesor, Clase, Alumnos, Tareas
+from .models import Tareas
 from plataforma.models import *
 
 # Create your views here.
