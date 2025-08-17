@@ -28,6 +28,12 @@ class ProfesorRegistroForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
         label="Repetir contraseña"
     )
+    clase = forms.ModelChoiceField(
+        queryset=Clase2.objects.filter(profesor__isnull=True),
+        required=False,
+        label="Asignar Clase",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     def clean_username(self):
         username = self.cleaned_data.get("username")

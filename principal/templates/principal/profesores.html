@@ -53,16 +53,19 @@
                         </small>
                     </p>
 
-                    {% if profesor.clases_impartidas.all %}
+                    {% with profesor.user.clases_impartidas.all as clases %}
+                    {% if clases %}
                     <h6>Clases Asignadas:</h6>
                     <ul>
-                        {% for clase in profesor.clases_impartidas.all %}
+                        {% for clase in clases %}
                         <li>{{ clase.nombre }}</li>
                         {% endfor %}
                     </ul>
                     {% else %}
                     <p><small class="text-muted">Aún no tiene clases asignadas.</small></p>
                     {% endif %}
+                    {% endwith %}
+
 
                     {# pendiente añadir botones de editar/eliminar #}
                 </div>

@@ -44,6 +44,7 @@ def profesores(request):
             username = form.cleaned_data['username']
             correo = form.cleaned_data['correo']
             password = form.cleaned_data['password']
+            clase_seleccionada = form.cleaned_data.get('clase')
 
             # Crear User
             user = User.objects.create_user(
@@ -62,6 +63,11 @@ def profesores(request):
             rol_profesor, created = Rol.objects.get_or_create(rol='profesor')
             kind_user.kind.add(rol_profesor)
 
+            # Asignar profesor a la clase seleccionada
+            if clase_seleccionada:
+                clase_seleccionada.profesor = user
+                clase_seleccionada.save()
+
             messages.success(request, f'El profesor {username} ha sido registrado correctamente.')
             return redirect('profesores')
         else:
@@ -75,7 +81,6 @@ def profesores(request):
         'profesores': lista_profesores,
     }
     return render(request, 'principal/profesores.html', context)
-
 
 def tareas(request):
     tareas = Tareas.objects.all().order_by('-created_at')
