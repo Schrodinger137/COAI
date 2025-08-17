@@ -7,9 +7,26 @@ from django.contrib.auth.models import Group
 from .forms import *
 from .models import Tareas
 from plataforma.models import *
+from functools import wraps
 
 # Create your views here.
 
+def agregar_roles(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        request.current_user = None
+        request.is_profesor = False
+        request.is_alumno = False
+
+        if request.user.is_authenticated:
+            request.current_user = KindUsers.objects.filter(user=request.user).first()
+            if request.current_user:
+                request.is_profesor = request.current_user.kind.filter(rol="profesor").exists()
+                request.is_alumno = request.current_user.kind.filter(rol="alumno").exists()
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 def index(request):
     return render(request, "principal/index.html")
@@ -39,84 +56,85 @@ def log_out(request):
 
 
 @login_required
+@agregar_roles
 def profesores(request):
-    if request.method == "POST":
-        form = ProfesorRegistroForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            correo = form.cleaned_data["correo"]
-            password = form.cleaned_data["password"]
-            clase_seleccionada = form.cleaned_data.get("clase")
+    form = ProfesorRegistroForm(request.POST or None)
 
-            # Crear User
-            user = User.objects.create_user(
-                username=username, email=correo, password=password
-            )
+    if request.method == "POST" and form.is_valid():
+        user = User.objects.create_user(
+            username=form.cleaned_data["username"],
+            email=form.cleaned_data["correo"],
+            password=form.cleaned_data["password"]
+        )
+        kind_user = KindUsers.objects.create(
+            user=user, tel=form.cleaned_data.get("telefono", "")
+        )
+        rol_profesor, _ = Rol.objects.get_or_create(rol="profesor")
+        kind_user.kind.add(rol_profesor)
 
-            # Crear KindUser
-            kind_user = KindUsers.objects.create(
-                user=user, tel=form.cleaned_data.get("telefono", "")
-            )
+        clase_seleccionada = form.cleaned_data.get("clase")
+        if clase_seleccionada:
+            clase_seleccionada.profesor = user
+            clase_seleccionada.save()
 
-            # Asignar rol profesor
-            rol_profesor, created = Rol.objects.get_or_create(rol="profesor")
-            kind_user.kind.add(rol_profesor)
-
-            # Asignar profesor a la clase seleccionada
-            if clase_seleccionada:
-                clase_seleccionada.profesor = user
-                clase_seleccionada.save()
-
-            messages.success(
-                request, f"El profesor {username} ha sido registrado correctamente."
-            )
-            return redirect("profesores")
-        else:
-            messages.error(request, "Error al registrar el profesor.")
+        messages.success(request, f"El profesor {user.username} ha sido registrado correctamente.")
+        return redirect("profesores")
+    
+    if request.user.is_superuser or request.is_profesor:
+        lista_profesores = KindUsers.objects.filter(kind__rol="profesor")
+    elif request.is_alumno:
+        clases_alumno = Clase2.objects.filter(alumnos=request.current_user)
+        lista_profesores = KindUsers.objects.filter(
+            kind__rol="profesor",
+            user__in=clases_alumno.values_list("profesor", flat=True)
+        )
     else:
-        form = ProfesorRegistroForm()
+        lista_profesores = KindUsers.objects.none()
 
-    lista_profesores = KindUsers.objects.filter(kind__rol="profesor")
     context = {
         "form": form,
         "profesores": lista_profesores,
+        "is_profesor": request.is_profesor,
+        "is_alumno": request.is_alumno,
     }
+
     return render(request, "principal/profesores.html", context)
 
-
+@login_required
 def tareas(request):
     tareas = Tareas.objects.all().order_by("-created_at")
     return render(request, "principal/vistaTareas.html", {"tareas": tareas})
 
-
+@agregar_roles
+@login_required
 def detalleTarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
+
     context = {
         "tarea": tarea,
+        "is_profesor": request.is_profesor,
+        "is_alumno": request.is_alumno,
     }
     return render(request, "principal/detallesTarea.html", context)
 
 
+@agregar_roles
+@login_required
 def detalleClase(request, clase_id):
-    current_user = KindUsers.objects.filter(user=request.user).first()
-    if current_user:
-        is_profesor = current_user.kind.filter(rol="profesor").exists()
-    else:
-        is_profesor = False
     clase = get_object_or_404(Clase2, id=clase_id)
+    
+    if not (request.is_profesor or request.is_alumno or request.user.is_superuser):
+        messages.error(request, "No tienes acceso a esta clase.")
+        return redirect("clases")
+    
+    if request.is_alumno and request.current_user not in clase.alumnos.all():
+        messages.error(request, "No puedes ver esta clase.")
+        return redirect("clases")
+
     tareas = Tareas.objects.filter(clase=clase)
     alumnos = clase.alumnos.all()
     form = AlumnoRegistroForm()
     tareaForm = TareasForm(initial={"clase": clase})
-
-    if request.method == "POST" and "tarea_submit" in request.POST:
-        tarea_form = TareasForm(request.POST, request.FILES)
-        if tarea_form.is_valid():
-            tarea_form.save()
-            messages.success(request, "Tarea registrada correctamente.")
-            return redirect("detalleClase", clase_id=clase.id)
-        else:
-            messages.error(request, "Error al registrar la tarea.")
 
     context = {
         "clase": clase,
@@ -124,32 +142,44 @@ def detalleClase(request, clase_id):
         "alumnos": alumnos,
         "form": form,
         "tareaForm": tareaForm,
-        "is_profesor": is_profesor,
+        "is_profesor": request.is_profesor,
+        "is_alumno": request.is_alumno,
     }
     return render(request, "principal/detalleClase.html", context)
 
-
 @login_required
+@agregar_roles
 def clases(request):
-    clases = Clase2.objects.all()
     form = ClaseForm()
+
+    if request.user.is_superuser:
+        clases = Clase2.objects.all()
+    elif request.is_profesor:
+        clases = Clase2.objects.filter(profesor=request.current_user.user)
+    elif request.is_alumno:
+        clases = Clase2.objects.filter(alumnos=request.current_user)
+    else:
+        clases = Clase2.objects.none()
 
     if request.method == "POST":
         form = ClaseForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Clase registrada")
-            return redirect("clases")  # Redirige el modal a la misma vista
+            return redirect("clases")
         else:
             messages.error(request, "Error al registrar la clase")
 
     context = {
         "clases": clases,
-        "form": form,  # pasamos el form al contexto
+        "form": form,
+        "is_profesor": request.is_profesor,
+        "is_alumno": request.is_alumno,
     }
+
     return render(request, "principal/clases.html", context)
 
-
+@login_required
 def registroAlumnos(request, clase_id):
     clase = get_object_or_404(Clase2, id=clase_id)
 
@@ -216,7 +246,7 @@ def entregar_tarea(request, tarea_id):
     }
     return render(request, 'principal/detallesTarea.html', context)
 
-
+@login_required
 def eliminar_tarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
 
