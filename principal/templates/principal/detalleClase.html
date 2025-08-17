@@ -64,22 +64,21 @@
     </div>
 </div>
 
-<!-- Modal para agregar alumno -->
-<div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoModalLabel"
-    aria-hidden="true">
+<!-- Modal para agregar tarea -->
+<div class="modal fade" id="agregarTareaModal" tabindex="-1" aria-labelledby="agregarTareaModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="agregarAlumnoModalLabel">Registrar Nuevo Alumno</h5>
+                <h5 class="modal-title" id="agregarTareaModalLabel">Registrar Nueva Tarea</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'registroAlumnos' clase.id %}" method="post">
+                <form action="{% url 'detalleClase' clase.id %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    {{ tareaForm.as_p }}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="submit" name="tarea_submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
             </div>
@@ -88,10 +87,11 @@
 </div>
 
 
+
 {% if is_profesor %}
 <button class="btn btn-primary btn-lg rounded-circle shadow"
     style="position: fixed; bottom: 20px; right: 20px; z-index: 1050;" data-bs-toggle="modal"
-    data-bs-target="#agregarAlumnoModal">
+    data-bs-target="#agregarTareaModal">
     +
 </button>
 {% endif %}

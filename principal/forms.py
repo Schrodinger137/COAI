@@ -119,6 +119,16 @@ class TareasForm(forms.ModelForm):
     class Meta:
         model = Tareas
         fields = ['clase', 'titulo', 'descripcion', 'fecha_entrega', 'archivo']
-        widgets={
-            'archivo': CustomClearableFileInput
+        widgets = {
+            'clase': forms.HiddenInput(),  # Se asigna automáticamente desde la vista
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título de la tarea'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción de la tarea'}),
+            'fecha_entrega': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'archivo': CustomClearableFileInput,  # Mantienes tu widget personalizado
+        }
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+            'fecha_entrega': 'Fecha de entrega',
+            'archivo': 'Archivo adjunto',
         }

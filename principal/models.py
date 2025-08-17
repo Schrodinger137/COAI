@@ -62,7 +62,6 @@ class Clase2(models.Model):
 
     def __str__(self):
         return self.nombre
-    
 class Alumnos(models.Model):
     nombre = models.CharField(max_length=100, verbose_name="Nombre del Alumno")
     tutor = models.CharField(max_length=100, verbose_name="Nombre del Tutor")
