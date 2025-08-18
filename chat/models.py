@@ -1,9 +1,16 @@
+# En chat/models.py
 from django.db import models
+from django.contrib.auth.models import User
 
 class Message(models.Model):
-    username = models.CharField(max_length=150)
+    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['timestamp']
 
     def __str__(self):
-        return f"{self.username}: {self.content[:20]}..."  # Display first 20 characters of the message
+        return f"De {self.sender} a {self.receiver}: {self.content[:20]}..."

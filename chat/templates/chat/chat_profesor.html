@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Profesor</title>
+    <style>
+        .alumno-list {
+            list-style: none;
+            padding: 0;
+        }
+        .alumno-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .chat-button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Alumnos</h1>
+    <ul class="alumno-list">
+        {% for alumno in alumnos %}
+        <li class="alumno-item">
+            <span>{{ alumno.user.get_full_name|default:alumno.user.username }}</span>
+            <a href="{% url 'chat_window' profesor=request.user.username alumno=alumno.user.username %}" class="chat-button">Chatear</a>
+        </li>
+        {% empty %}
+        <li>No tienes alumnos asignados en ninguna clase.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
