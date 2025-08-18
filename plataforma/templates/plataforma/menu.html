@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .sidebar {
             min-height: 100vh;
@@ -43,7 +44,6 @@
             color: white;
         }
 
-        /* Clase personalizada para ancho intermedio */
         @media (min-width: 992px) {
             .col-lg-custom {
                 flex: 0 0 14%;
@@ -63,7 +63,6 @@
             background-color: #ff7a3d;
         }
 
-        /* Estilos para el botón de chat flotante */
         .chat-button {
             position: fixed;
             bottom: 20px;
@@ -93,7 +92,6 @@
             pointer-events: none;
         }
 
-        /* Ajuste para dispositivos móviles */
         @media (max-width: 768px) {
             .chat-button {
                 width: 50px;
@@ -103,74 +101,120 @@
                 left: 15px;
             }
         }
-            .alumno-list {
-                list-style: none;
-                padding: 0;
-            }
-            .alumno-item {
-                padding: 10px;
-                margin: 5px 0;
-                background-color: #f5f5f5;
-                border-radius: 5px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .chat-button-user {
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                cursor: pointer;
-                text-decoration: none;
-            }
-            .chat-button:hover {
-                background-color: #45a049;
+
+        .alumno-list {
+            list-style: none;
+            padding: 0;
         }
+
+        .alumno-item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-button-user {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .chat-button:hover {
+            background-color: #45a049;
+        }
+
         h1 {
             color: #333;
         }
+
+        /* Estilos para el botón del menú hamburguesa */
+        @media (max-width: 767.98px) {
+            .navbar-toggler {
+                display: block;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .navbar-toggler {
+                display: none;
+            }
+        }
     </style>
-    <!-- Iconos de Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="container-fluid">
-
-    <nav class="navbar navbar-light px-4">
-            <div class="w-100 p-2">
-                    <!-- boton burgir -->
-                <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <div class="row">
+        <nav class="navbar navbar-light px-4">
+            <div class="w-100 p-2 d-flex justify-content-between align-items-center">
                 <a class="navbar-brand">
                     <strong class="text-white"><u><i><a href="{% url 'index' %}" class="text-white">C O A I </a></u> -
                         {% if request.user.is_authenticated %}
-                        {{ user.username }}
+                            {{ user.username }}
                         {% else %}
-                        Invitado
+                            Invitado
                         {% endif %}
-
-
-                        {% if request.user.is_authenticated %}
-                        <a href="{% url 'logout' %}"><button class="btn cerrar-sesion">Cerrar Sesión</button></a>
-                        {% else %}
-                        {% endif %}
-                        </i></strong>
+                    </i></strong>
                 </a>
+
+                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}"><button class="btn cerrar-sesion d-none d-md-block">Cerrar Sesión</button></a>
+                {% endif %}
             </div>
         </nav>
 
-        <!-- no se debe tener el content y el footer en un mismo row -->
-        <div class="row">
+        <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <a href="{% url 'index' %}">
+                    <button class="btn sidebar-button">Inicio</button>
+                </a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'clases' %}">
+                        <button class="btn sidebar-button">Clases</button>
+                    </a>
+                    <a href="{% url 'profesores' %}">
+                        <button class="btn sidebar-button">Profesores</button>
+                    </a>
+                    <a href="{% url 'tareas' %}">
+                        <button class="btn sidebar-button">Ver tareas</button>
+                    </a>
+                    <button class="btn sidebar-button" type="button" data-bs-toggle="modal" data-bs-target="#miCuentaModal">
+                        <i class="fas fa-user-circle me-2"></i> Mi Cuenta
+                    </button>
+                    <a href="{% url 'logout' %}">
+                        <button class="btn sidebar-button">Cerrar Sesión</button>
+                    </a>
+                {% else %}
+                    <a href="{% url 'index' %}#ubicacion">
+                        <button class="btn sidebar-button">Ubicacion</button>
+                    </a>
+                    <a href="{% url 'index' %}#contacto">
+                        <button class="btn sidebar-button">Contacto</button>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
 
-              <!-- <!== Sidebar con ancho personalizado ==>
-        <div class="sidebar col-md-2 col-lg-custom p-3">
+        <div class="sidebar col-md-2 col-lg-custom p-3 d-none d-md-block">
             <a href="{% url 'index' %}">
                 <button class="btn sidebar-button">Inicio</button>
             </a>
-            {% if request.user.is_authenticated %}        
+            {% if request.user.is_authenticated %}
                 <a href="{% url 'clases' %}">
                     <button class="btn sidebar-button">Clases</button>
                 </a>
@@ -180,11 +224,10 @@
                 <a href="{% url 'tareas' %}">
                     <button class="btn sidebar-button">Ver tareas</button>
                 </a>
-                
-                <!== Menú de perfil (ya lo tenías condicionado) ==>
-                {% include 'principal/edicionPerfil.html' %}
-                
-            {% else %}       
+                <button class="btn sidebar-button" type="button" data-bs-toggle="modal" data-bs-target="#miCuentaModal">
+                    <i class="fas fa-user-circle me-2"></i> Mi Cuenta
+                </button>
+            {% else %}
                 <a href="{% url 'index' %}#ubicacion">
                     <button class="btn sidebar-button">Ubicacion</button>
                 </a>
@@ -192,80 +235,18 @@
                     <button class="btn sidebar-button">Contacto</button>
                 </a>
             {% endif %}
-        </div> -->
+        </div>
 
-<div class="offcanvas offcanvas-start bg-light d-md-none" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <a href="{% url 'index' %}">
-            <button class="btn sidebar-button">Inicio</button>
-        </a>
-        {% if request.user.is_authenticated %}
-            <a href="{% url 'clases' %}">
-                <button class="btn sidebar-button">Clases</button>
-            </a>
-            <a href="{% url 'profesores' %}">
-                <button class="btn sidebar-button">Profesores</button>
-            </a>
-            <a href="{% url 'tareas' %}">
-                <button class="btn sidebar-button">Ver tareas</button>
-            </a>
-            
-            {% include 'principal/edicionPerfil.html' %}
-            
-        {% else %}
-            <a href="{% url 'index' %}#ubicacion">
-                <button class="btn sidebar-button">Ubicacion</button>
-            </a>
-            <a href="{% url 'index' %}#contacto">
-                <button class="btn sidebar-button">Contacto</button>
-            </a>
-        {% endif %}
-    </div>
-</div>
-
-<div class="sidebar d-none d-md-block col-md-2 col-lg-custom p-3">
-    <a href="{% url 'index' %}">
-        <button class="btn sidebar-button">Inicio</button>
-    </a>
-    {% if request.user.is_authenticated %}
-        <a href="{% url 'clases' %}">
-            <button class="btn sidebar-button">Clases</button>
-        </a>
-        <a href="{% url 'profesores' %}">
-            <button class="btn sidebar-button">Profesores</button>
-        </a>
-        <a href="{% url 'tareas' %}">
-            <button class="btn sidebar-button">Ver tareas</button>
-        </a>
-        {% include 'principal/edicionPerfil.html' %}
-    {% else %}
-        <a href="{% url 'index' %}#ubicacion">
-            <button class="btn sidebar-button">Ubicacion</button>
-        </a>
-        <a href="{% url 'index' %}#contacto">
-            <button class="btn sidebar-button">Contacto</button>
-        </a>
-    {% endif %}
-</div>
-
-
-            <!-- Contenido principal -->
         <div class="col-md-10 col-lg p-4">
             {% block contenido %}{% endblock %}
         </div>
         <hr style="height: 30px;">
+    </div>
 
-        </div>
-
-    <!-- Botón flotante de chat (solo visible cuando el usuario está autenticado) -->
     {% if request.user.is_authenticated %}
-    <a href="{% url 'chat_view' %}" class="chat-button" title="Abrir chat">
-        <i class="fas fa-comments"></i>
-    </a>
+        <a href="{% url 'chat_view' %}" class="chat-button" title="Abrir chat">
+            <i class="fas fa-comments"></i>
+        </a>
     {% endif %}
 
     <div class="row">
@@ -277,7 +258,7 @@
                 <div class="col-md-4">
                     <h5><strong>Integrantes</strong></h5>
                     <p>Arturo Osiel Arrieta<br>
-                    Alejandro Govea Matinez<br>
+                    Alejandro Govea Martinez<br>
                     Carina Ponce Osornio<br>
                     Ivo Yaluk Ramos</p>
                 </div>
@@ -289,6 +270,6 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'principal/edicionPerfil.html' %}
 </body>
-
 </html>
