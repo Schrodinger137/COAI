@@ -19,7 +19,12 @@ class ProfesorRegistroForm(forms.Form):
         max_length=20,
         required=False,
         label="Número de Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'type': 'tel',
+            'pattern': r'\d{10}',
+            'title': 'El número de teléfono debe contener exactamente 10 dígitos numéricos.'
+        })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
@@ -98,7 +103,12 @@ class AlumnoRegistroForm(forms.Form):
         max_length=20,
         required=False,
         label="Número de Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'type': 'tel', 
+            'pattern': r'\d{10}',
+            'title': 'El número de teléfono debe contener exactamente 10 dígitos numéricos.'
+        })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
