@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from .forms import *
-from .models import Tareas
+from .models import Tareas,Duda
 from plataforma.models import *
 from functools import wraps
 
@@ -183,15 +183,49 @@ def agregar_tarea(request, clase_id):
 @login_required
 def detalleTarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
-    form = EntregaForm()
+
+    # Handle POST requests
+    if request.method == 'POST':
+        # checa si es el form duda
+        if 'duda_form_submit' in request.POST:
+            duda_form = DudaForm(request.POST)
+            if duda_form.is_valid():
+                duda = duda_form.save(commit=False)
+                duda.tarea = tarea
+                duda.autor = request.user
+                duda.save()
+                messages.success(request, '¡Tu duda ha sido publicada!')
+                return redirect('detalleTarea', tarea_id=tarea.id)
+            else:
+                messages.error(request, 'Hubo un error al enviar tu duda. Por favor, revisa el formulario.')
+        
+        # checa si es el form entrega
+        elif 'entrega_form_submit' in request.POST:
+            entrega_form = EntregaForm(request.POST, request.FILES)
+            if entrega_form.is_valid():
+                entrega = entrega_form.save(commit=False)
+                entrega.tarea = tarea
+                entrega.alumno = request.user.kind_user
+                entrega.save()
+                messages.success(request, '¡Tarea entregada con éxito!')
+                return redirect('detalleTarea', tarea_id=tarea.id)
+            else:
+                messages.error(request, 'Hubo un error al entregar la tarea.')
+
+    dudas = tarea.dudas.all().order_by('-fecha_creacion')
+    duda_form = DudaForm()
+    entrega_form = EntregaForm()
+
     context = {
         "tarea": tarea,
         "is_profesor": request.is_profesor,
         "is_alumno": request.is_alumno,
-        'form':form
+        "entrega_form": entrega_form,
+        "duda_form": duda_form,
+        "dudas": dudas,
     }
+    
     return render(request, "principal/detallesTarea.html", context)
-
 
 @agregar_roles
 @login_required

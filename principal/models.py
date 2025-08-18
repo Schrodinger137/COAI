@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.conf import settings 
 class Clase2(models.Model):
     profesor = models.ForeignKey(
         User,
@@ -43,6 +43,14 @@ class Tareas(models.Model):
     def __str__(self):
         return self.titulo
 
+class Duda(models.Model):
+    tarea = models.ForeignKey(Tareas, on_delete=models.CASCADE, related_name='dudas')
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'Duda de {self.autor.username} sobre {self.tarea.titulo}'
 
 class Entrega(models.Model):
     tarea = models.ForeignKey(

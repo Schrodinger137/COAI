@@ -19,7 +19,8 @@
                     <h5 class="card-title">Subir tarea</h5>
                     <form method="post" enctype="multipart/form-data" action="{% url 'entregar_tarea' tarea.id %}">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        <input type="hidden" name="entrega_form_submit" value="1">
+                        {{ entrega_form.as_p }}
                         <button type="submit" class="btn sidebar-button">Enviar</button>
                     </form>
                 </div>
@@ -48,46 +49,35 @@
         </div>
     </div>
     <div class="col-md-9">
-        <h1>Blog de dudas</h1>
-        <p>En esta sección se pueden agregar comentarios o preguntas sobre la tarea.</p>
+    <h1>Blog de dudas</h1>
+    <p>En esta sección se pueden agregar comentarios o preguntas sobre la tarea.</p>
 
-        <div class="container my-5" style="margin: 2rem;">
-            <div class="d-flex mb-4">
-                <div class="me-3">
-                    <svg class="rounded-circle bg-light" width="50" height="50" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.93 0 3.5 1.57 3.5 3.5S13.93 12 12 12 8.5 10.43 8.5 8.5 10.07 5 12 5zm0 14.1c-2.76 0-5.3-1.46-6.66-3.72C6.34 14.28 9.05 13 12 13s5.66 1.28 6.66 3.38c-1.36 2.26-3.9 3.72-6.66 3.72z"
-                            fill="#888" />
-                    </svg>
-                </div>
-                <div class="flex-grow-1">
-                    <h3 class="fw-bold">Nombre padre/niño</h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra
-                        nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus,
-                        tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui.
-                        Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio,
-                        elementum in tempus ut, vehicula eu diam.
-                    </p>
-                    <div class="card p-3 mt-3">
-                        <label for="respuesta" class="form-label">Respuesta a:</label>
-                        <textarea class="form-control" id="respuesta" rows="3"
-                            placeholder="Escriba una respuesta."></textarea>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div>
-                                <button type="button" class="btn btn-sm btn-light">B</button>
-                                <button type="button" class="btn btn-sm btn-light">I</button>
-                                <button type="button" class="btn btn-sm btn-light">S</button>
-                                <button type="button" class="btn btn-sm btn-light">...</button>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Enviar <i class="bi bi-send"></i></button>
-                        </div>
-                    </div>
+    <div class="mt-4">
+        {% for duda in dudas %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ duda.autor.username }}</h5>
+                    <p class="card-text">{{ duda.contenido }}</p>
+                    <small class="text-muted">{{ duda.fecha_creacion|date:"d/m/Y H:i" }}</small>
                 </div>
             </div>
+        {% empty %}
+            <div class="alert alert-info">
+                Aún no hay dudas sobre esta tarea. ¡Sé el primero en preguntar!
+            </div>
+        {% endfor %}
+
+        <div class="mt-4">
+            <h3>Publicar una nueva duda</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="duda_form_submit" value="1">
+                {{ duda_form.as_p }}
+                <button type="submit" class="btn btn-primary">Enviar Duda</button>
+            </form>
         </div>
     </div>
+</div>
 </div>
 
 <div class="modal fade" id="confirmacionEliminar" tabindex="-1" aria-labelledby="confirmacionEliminarLabel"

@@ -40,3 +40,10 @@ admin.site.register(Tareas, TareasAdmin)
 @admin.register(Entrega)
 class EntregaAdmin(admin.ModelAdmin):
     list_display = ('alumno', 'comentario', 'archivo', 'fecha_entrega')
+
+@admin.register(Duda)
+class DudaAdmin(admin.ModelAdmin):
+    list_display = ('tarea', 'autor', 'fecha_creacion')
+    list_filter = ('fecha_creacion', 'tarea__titulo', 'autor__username')
+    ordering = ('-fecha_creacion',)
+    search_fields = ('contenido', 'autor__username', 'tarea__titulo')

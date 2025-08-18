@@ -138,3 +138,14 @@ class EntregaForm(forms.ModelForm):
     class Meta:
         model = Entrega
         fields = ['archivo', 'comentario']
+
+class DudaForm(forms.ModelForm):
+    class Meta:
+        model = Duda
+        fields = ['contenido']
+        widgets = {
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Escribe tu duda o comentario...'}),
+        }
+        labels = {
+            'contenido': 'Duda',
+        }
