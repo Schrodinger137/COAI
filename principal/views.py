@@ -155,3 +155,6 @@ def eliminar_tarea(request, tarea_id):
         'tarea': tarea,
     }
     return render(request, 'principal/eliminarTarea.html', context)
+
+def cuenta(request):
+    return render(request, 'principal/edicionPerfil.html')

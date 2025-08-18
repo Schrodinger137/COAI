@@ -38,7 +38,8 @@ urlpatterns = [
     path('eliminar_tarea/<int:tarea_id>/', views.eliminar_tarea, name='eliminar_tarea'),
     path('chat/', chat_views.chat_window, name='chat_window'),
     path('send_message/', chat_views.send_message, name='send_message'),
-    path('get_messages/', chat_views.get_messages, name='get_messages')
+    path('get_messages/', chat_views.get_messages, name='get_messages'),
+    path('cuenta/', views.cuenta, name='cuenta'),
     
 ]
 
