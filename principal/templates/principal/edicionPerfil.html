@@ -1,77 +1,30 @@
-<style>
-    /* Aplica solo al offcanvas de cuenta */
-    #offcanvasExample {
-        width: 400px;
-        /* similar al modal */
-        height: auto;
-        max-height: 80vh;
-        /* que no ocupe toda la pantalla */
-        border-radius: 12px 12px 0 0;
-        /* esquinas redondeadas arriba */
-        left: 20px;
-        /* separado un poco del borde */
-        bottom: 20px;
-        /* separado del borde inferior */
-        top: auto;
-        /* elimina posición top default */
-        transform: translateY(100%);
-        /* para animación */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* Cuando está visible */
-    #offcanvasExample.show {
-        transform: translateY(0);
-    }
-
-    /* Encabezado y cuerpo como el modal */
-    #offcanvasExample .offcanvas-header {
-        border-bottom: 1px solid #dee2e6;
-        border-radius: 12px 12px 0 0;
-        background: #f8f9fa;
-    }
-
-    #offcanvasExample .offcanvas-body {
-        padding: 20px;
-    }
-
-    /* Que se parezca al modal centrado */
-    #offcanvasExample .btn-close {
-        outline: none;
-    }
-</style>
-
-<a href="#" class="list-group-item list-group-item-action py-2 ripple">
-    <button class="btn sidebar-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-        aria-controls="offcanvasExample">
-        <i class="fas fa-user-circle me-2"></i> Mi Cuenta
-    </button>
-</a>
-
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Detalles de la Cuenta</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div>
-            <div class="row">
-                <div class="col-md-3">
-                    <svg class="rounded-circle bg-light" width="50" height="50" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.93 0 3.5 1.57 3.5 3.5S13.93 12 12 12 8.5 10.43 8.5 8.5 10.07 5 12 5zm0 14.1c-2.76 0-5.3-1.46-6.66-3.72C6.34 14.28 9.05 13 12 13s5.66 1.28 6.66 3.38c-1.36 2.26-3.9 3.72-6.66 3.72z"
-                            fill="#888" />
-                    </svg>
-                </div>
-                <div class="col-md-9">
-                    <p>Hola, <strong>{{ user.username }}</strong></p>
-                    <p>Correo: {{ user.email }}</p>
-                </div>
-
-                <div class="d-grid ">
-                    <a href="{% url 'logout' %}"><button class="btn boton-naranja mb-2">Cerrar Sesión</button></a>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar perfil</button>
+<div class="modal fade" id="miCuentaModal" tabindex="-1" aria-labelledby="miCuentaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="miCuentaModalLabel">Mi Cuenta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <svg class="rounded-circle bg-light" width="50" height="50" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.93 0 3.5 1.57 3.5 3.5S13.93 12 12 12 8.5 10.43 8.5 8.5 10.07 5 12 5zm0 14.1c-2.76 0-5.3-1.46-6.66-3.72C6.34 14.28 9.05 13 12 13s5.66 1.28 6.66 3.38c-1.36 2.26-3.9 3.72-6.66 3.72z"
+                                    fill="#888" />
+                            </svg>
+                        </div>
+                        <div class="col-md-9">
+                            <p>Hola, <strong>{{ user.username }}</strong></p>
+                            <p>Correo: {{ user.email }}</p>
+                        </div>
+                        <div class="d-grid">
+                            <a href="{% url 'logout' %}"><button class="btn boton-naranja mb-2">Cerrar Sesión</button></a>
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editarPerfilModal">Editar perfil</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,7 +46,6 @@
                         <input type="text" class="form-control" id="username" 
                                name="username" value="{{ user.username }}" required>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="email" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="email" 
@@ -102,7 +54,7 @@
                     <div class="mb-3">
                         <label for="telefono" class="form-label">Teléfono</label>
                         <input type="tel" class="form-control" id="telefono" 
-                               name="telefono" value="{{  request.current_user.tel }}">
+                               name="telefono" value="{{ request.current_user.tel }}">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Nueva Contraseña (opcional)</label>
