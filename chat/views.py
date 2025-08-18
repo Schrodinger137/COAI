@@ -39,17 +39,26 @@ def handle_alumno_view(request, current_user):
 
 @login_required
 def chat_window(request, profesor, alumno):
-    """Vista de la ventana de chat entre profesor y alumno"""
     profesor_user = get_object_or_404(User, username=profesor)
     alumno_user = get_object_or_404(User, username=alumno)
     
     if request.user not in [profesor_user, alumno_user]:
         return render(request, 'chat/access_denied.html')
     
+    # Determina quién es el otro usuario
+    if request.user == profesor_user:
+        other_user = alumno_user
+        other_user_kind = KindUsers.objects.get(user=other_user)
+        other_user_name = other_user_kind.user.username  # O usa first_name + last_name si lo prefieres
+    else:
+        other_user = profesor_user
+        other_user_name = "Profesor"  # O puedes usar el nombre real
+    
     context = {
         'profesor': profesor_user,
         'alumno': alumno_user,
-        'other_user': alumno_user if request.user == profesor_user else profesor_user
+        'other_user': other_user,
+        'other_user_name': other_user_name  # Nuevo campo agregado
     }
     return render(request, 'chat/chat_window.html', context)
 

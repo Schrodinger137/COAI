@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "plataforma/menu.html" %}
+{% block contenido %}
     <title>Chat con {{ profesor.user.username }}</title>
     <style>
         :root {
@@ -115,11 +112,12 @@
             max-width: 80%;
         }
     </style>
-</head>
-<body>
+
+
+
     <div class="chat-container">
         <div class="chat-header">
-            <h2>Chat con {{ profesor.user.username }}</h2>
+            <h2>Chat con {{ profesor.user.username }} {{ other_user_name }}</h2>
         </div>
         
         <div class="chat-box">
@@ -261,5 +259,4 @@ function showErrorMessage(text) {
         // Inicializar el chat cuando se carga la página
         document.addEventListener('DOMContentLoaded', initChat);
     </script>
-</body>
-</html>
+{% endblock %}
