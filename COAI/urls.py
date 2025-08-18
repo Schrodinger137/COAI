@@ -34,13 +34,13 @@ urlpatterns = [
     path('clase/<int:clase_id>/agregar-tarea/', views.agregar_tarea, name='agregar_tarea'),
     path('tareas/detalles/<int:tarea_id>/', views.detalleTarea, name='detalleTarea'),
     path('entregar_tarea/<int:tarea_id>/', views.entregar_tarea, name='entregar_tarea'),
-    path('entregas', views.entregas, name='entregas'),
+    path('entregas/<int:tarea_id>/', views.entregas, name='entregas'),
     path('registroAlumnos/<int:clase_id>/', views.registroAlumnos , name='registroAlumnos'),
     path('eliminar_tarea/<int:tarea_id>/', views.eliminar_tarea, name='eliminar_tarea'),
     path('chat/', chat_views.chat_window, name='chat_window'),
     path('send_message/', chat_views.send_message, name='send_message'),
     path('get_messages/', chat_views.get_messages, name='get_messages'),
-    path('cuenta/', views.cuenta, name='cuenta'),
+    path('cuenta/', views.cuenta, name='cuenta')
     
 ]
 

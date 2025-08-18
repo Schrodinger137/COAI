@@ -25,7 +25,7 @@
             </div>
             {% else %}
             <br>
-            <a class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas</a>
+            <a class="btn sidebar-button" href="{% url 'entregas' tarea.id %}">Ver entregas</a>
             <button type="button" class="btn boton-naranja" data-bs-toggle="modal"
                 data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
             {% endif %}

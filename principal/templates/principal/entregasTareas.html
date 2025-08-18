@@ -1,49 +1,65 @@
 {% extends "plataforma/menu.html" %}
 
-{%block contenido%}
-
+{% block contenido %}
 <div class="row">
-    <h1>Entregas
-
+    <h1>Entregas de {{ tarea.nombre }} 
         <a href="javascript:history.back()" class="btn btn-secondary mb-3">Regresar</a>
     </h1>
-    <!-- si no hay entregas -->
-    <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">No se ha entregado ninguna tarea hasta el momemnto.</h4>
-    </div>
 
-
-    <div class="container p-3">
-        <div class="card border-2 border-success">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <h5 class="card-title m-0">Alumno: <span class="text-muted">Fulano de tal</span></h5>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRevision">Revisar</button>
+    {% if entregas %}
+        {% for entrega in entregas %}
+        <div class="container p-3">
+            <div class="card border-2 border-success mb-2">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <h5 class="card-title m-0"> 
+                      {{ entrega.alumno }}
+                    </h5>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRevision{{ entrega.id }}">
+                        Revisar
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-
-<div class="modal fade" id="modalRevision" tabindex="-1" aria-labelledby="modalRevisionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal único por entrega -->
+<div class="modal fade" id="modalRevision{{ entrega.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-dialog-centered">
+        
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalRevisionLabel">Nombre de la actividad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">{{ tarea.titulo }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <!-- <img src="https://www.coldelvalle.edu.mx/wp-content/uploads/2021/10/2.-Ki%CC%81nder-o-preescolar-1-1536x831.jpg" alt="Archivo entregado" class="img-fluid"> -->
-                        <div class="modal-body">
-                            <iframe src="ruta/a/tu/archivo.pdf" style="width:100%; height:500px;"
-                                frameborder="0"></iframe>
-                        </div>
-                    </div>
-                    <div class="mb-3">
+                    {% if entrega.archivo %}
+                        {% with file_extension=entrega.archivo.url|slice:"-4:" %}
+                            {% if file_extension == ".jpg" or file_extension == "jpeg" or file_extension == ".png" or file_extension == ".gif" %}
+                                <div class="mb-3">
+                                    <img src="{{ tarea.archivo.url }}" alt="Archivo de la tarea" class="img-fluid" style="max-width: 100%; height: auto;">
+                                </div>
+                            {% elif file_extension == ".pdf" %}    
+                                <div class="mb-3">
+                                    <div class="modal-body">
+                                        <iframe src="{{ tarea.archivo.url }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                                    </div>
+                                </div>
+                            {% else %}
+                            <div class="alert alert-info" role="alert">
+                                <h4 class="alert-heading">No se puede previsualizar este tipo de archivo.</h4>
+                                <p>Puedes descargarlo para verlo.</p>
+                                <a href="{{ tarea.archivo.url }}" class="btn btn-primary" download>Descargar archivo</a>
+                            </div>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                           
+
+                    <div class="mb-3 mt-3">
                         <label for="calificacion" class="form-label">Calificación</label>
-                        <input type="number" class="form-control" id="calificacion" min="0" max="10">
+                        <input type="number" name="calificacion" class="form-control" min="0" max="10">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -52,6 +68,16 @@
                 </div>
             </form>
         </div>
+            
+        </div>
     </div>
 </div>
-{%endblock%}
+
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">No se ha entregado ninguna tarea hasta el momento.</h4>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
