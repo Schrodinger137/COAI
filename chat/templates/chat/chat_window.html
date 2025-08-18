@@ -1,59 +1,265 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'chat/css/chat.css' %}">
-    <title>Chat Window</title>
-</head>
-<body>
-    <div id="chat-container">
-        <div id="chat-box">
-            <div id="messages"></div>
-            <input type="text" id="message-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
-        </div>
-    </div>
-    <button id="chat-button">Chat</button>
-
-    <script>
-        const chatButton = document.getElementById('chat-button');
-        const chatBox = document.getElementById('chat-box');
-        const messagesDiv = document.getElementById('messages');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-
-        chatButton.addEventListener('click', () => {
-            chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
-        });
-
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value;
-            if (message) {
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
-                messageInput.value = '';
-                saveMessage(message);
-            }
-        });
-
-        function saveMessage(message) {
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.push(message);
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
+    <title>Chat con {{ profesor.user.username }}</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --message-received: #f1f1f1;
+            --message-sent: var(--primary-color);
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .chat-box {
+            padding: 15px;
+        }
+        
+        .messages-container {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        .message {
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .received {
+            background-color: var(--message-received);
+            text-align: left;
+            margin-right: auto;
+        }
+        
+        .sent {
+            background-color: var(--message-sent);
+            color: white;
+            text-align: right;
+            margin-left: auto;
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        #send-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #send-button:hover {
+            background-color: var(--primary-hover);
         }
 
-        function loadMessages() {
-            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.forEach(message => {
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
+        .info-message {
+            text-align: center;
+            color: #666;
+            background-color: #f8f9fa;
+            border: 1px dashed #ddd;
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 80%;
+        }
+
+        .error-message {
+            text-align: center;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat con {{ profesor.user.username }}</h2>
+        </div>
+        
+        <div class="chat-box">
+            <div class="messages-container" id="messages"></div>
+            
+            <div class="input-container">
+                <input type="text" id="message-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+                <button id="send-button">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        
+        // Variables globales
+        const currentUser = "{{ request.user.username }}";
+        const otherUser = "{{ other_user.username }}";
+        const csrfToken = "{{ csrf_token }}";
+        const pollInterval = 3000;
+        let messagePolling;
+
+        // Funciones principales
+        function initChat() {
+            if (!otherUser) {
+                console.error('Error: No se definió el usuario con quien chatear');
+                messagesContainer.innerHTML = '<div class="message">Error al cargar el chat</div>';
+                return;
+            }
+            
+            setupEventListeners();
+            loadMessages();
+            startMessagePolling();
+        }
+
+        function setupEventListeners() {
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
             });
         }
 
-        window.onload = loadMessages;
+        function addMessage(content, isSent) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageElement.textContent = content;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        async function loadMessages() {
+            try {
+                console.log(`Cargando mensajes con: ${otherUser}`);  // Debug
+        
+                const response = await fetch(`/get_messages/?user=${encodeURIComponent(otherUser)}`);
+        
+                console.log("Respuesta recibida:", response);  // Debug
+        
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => null);
+                    const errorMsg = errorData?.message || `Error HTTP: ${response.status}`;
+                    throw new Error(errorMsg);
+                }
+        
+                const data = await response.json();
+                console.log("Datos recibidos:", data);  // Debug
+        
+                messagesContainer.innerHTML = '';
+        
+                if (data.status !== 'ok') {
+                    throw new Error(data.message || 'Respuesta inesperada del servidor');
+                }
+        
+                if (!data.messages || data.messages.length === 0) {
+                    showInfoMessage('Aún no hay mensajes. ¡Envía el primero!');
+                    return;
+                }
+        
+                data.messages.forEach(msg => {
+                    addMessage(msg.content, msg.is_sent);
+                });
+        
+                } catch (error) {
+                    console.error('Error al cargar mensajes:', error);
+                    showErrorMessage(`Error al cargar mensajes: ${error.message}`);
+            }
+        }
+
+        function showInfoMessage(text) {
+            messagesContainer.innerHTML = `
+            <div class="message info-message">
+            ${text}
+            </div>
+            `;
+        }
+
+function showErrorMessage(text) {
+    messagesContainer.innerHTML = `
+        <div class="message error-message">
+            ${text}
+        </div>
+    `;
+}
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+
+            try {
+                const response = await fetch("/send_message/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: `receiver=${otherUser}&message=${encodeURIComponent(message)}`
+                });
+                
+                const data = await response.json();
+                if (data.status !== 'ok') {
+                    throw new Error(data.message || 'Error al enviar mensaje');
+                }
+            } catch (error) {
+                console.error('Error al enviar mensaje:', error);
+                alert(`Error al enviar mensaje: ${error.message}`);
+            }
+        }
+
+        function startMessagePolling() {
+            messagePolling = setInterval(loadMessages, pollInterval);
+        }
+
+        // Inicializar el chat cuando se carga la página
+        document.addEventListener('DOMContentLoaded', initChat);
     </script>
 </body>
 </html>

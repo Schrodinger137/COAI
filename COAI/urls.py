@@ -37,10 +37,12 @@ urlpatterns = [
     path('entregas/<int:tarea_id>/', views.entregas, name='entregas'),
     path('registroAlumnos/<int:clase_id>/', views.registroAlumnos , name='registroAlumnos'),
     path('eliminar_tarea/<int:tarea_id>/', views.eliminar_tarea, name='eliminar_tarea'),
-    path('chat/', chat_views.chat_window, name='chat_window'),
-    path('send_message/', chat_views.send_message, name='send_message'),
+    path('chat/', chat_views.chat_view, name='chat_view'),
+    path('chat/<str:profesor>/<str:alumno>/', chat_views.chat_window, name='chat_window'),
     path('get_messages/', chat_views.get_messages, name='get_messages'),
-    path('cuenta/', views.cuenta, name='cuenta')
+
+    path('send_message/', chat_views.send_message, name='send_message'),
+    path('cuenta/', views.cuenta, name='cuenta'),
     
 ]
 
