@@ -137,9 +137,13 @@
 </head>
 
 <body class="container-fluid">
-    <div class="row">
-        <nav class="navbar navbar-light px-4">
+
+    <nav class="navbar navbar-light px-4">
             <div class="w-100 p-2">
+                    <!-- boton burgir -->
+                <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <a class="navbar-brand">
                     <strong class="text-white"><u><i><a href="{% url 'index' %}" class="text-white">C O A I </a></u> -
                         {% if request.user.is_authenticated %}
@@ -158,7 +162,10 @@
             </div>
         </nav>
 
-        <!-- Sidebar con ancho personalizado -->
+        <!-- no se debe tener el content y el footer en un mismo row -->
+        <div class="row">
+
+              <!-- <!== Sidebar con ancho personalizado ==>
         <div class="sidebar col-md-2 col-lg-custom p-3">
             <a href="{% url 'index' %}">
                 <button class="btn sidebar-button">Inicio</button>
@@ -174,7 +181,7 @@
                     <button class="btn sidebar-button">Ver tareas</button>
                 </a>
                 
-                <!-- Menú de perfil (ya lo tenías condicionado) -->
+                <!== Menú de perfil (ya lo tenías condicionado) ==>
                 {% include 'principal/edicionPerfil.html' %}
                 
             {% else %}       
@@ -185,14 +192,72 @@
                     <button class="btn sidebar-button">Contacto</button>
                 </a>
             {% endif %}
-        </div>
+        </div> -->
 
-        <!-- Contenido principal -->
+<div class="offcanvas offcanvas-start bg-light d-md-none" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <a href="{% url 'index' %}">
+            <button class="btn sidebar-button">Inicio</button>
+        </a>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'clases' %}">
+                <button class="btn sidebar-button">Clases</button>
+            </a>
+            <a href="{% url 'profesores' %}">
+                <button class="btn sidebar-button">Profesores</button>
+            </a>
+            <a href="{% url 'tareas' %}">
+                <button class="btn sidebar-button">Ver tareas</button>
+            </a>
+            {% include 'principal/edicionPerfil.html' %}
+        {% else %}
+            <a href="{% url 'index' %}#ubicacion">
+                <button class="btn sidebar-button">Ubicacion</button>
+            </a>
+            <a href="{% url 'index' %}#contacto">
+                <button class="btn sidebar-button">Contacto</button>
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="sidebar d-none d-md-block col-md-2 col-lg-custom p-3">
+    <a href="{% url 'index' %}">
+        <button class="btn sidebar-button">Inicio</button>
+    </a>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'clases' %}">
+            <button class="btn sidebar-button">Clases</button>
+        </a>
+        <a href="{% url 'profesores' %}">
+            <button class="btn sidebar-button">Profesores</button>
+        </a>
+        <a href="{% url 'tareas' %}">
+            <button class="btn sidebar-button">Ver tareas</button>
+        </a>
+        {% include 'principal/edicionPerfil.html' %}
+    {% else %}
+        <a href="{% url 'index' %}#ubicacion">
+            <button class="btn sidebar-button">Ubicacion</button>
+        </a>
+        <a href="{% url 'index' %}#contacto">
+            <button class="btn sidebar-button">Contacto</button>
+        </a>
+    {% endif %}
+</div>
+
+
+            <!-- Contenido principal -->
         <div class="col-md-10 col-lg p-4">
             {% block contenido %}{% endblock %}
         </div>
         <hr style="height: 30px;">
-    </div>
+
+        </div>
 
     <!-- Botón flotante de chat (solo visible cuando el usuario está autenticado) -->
     {% if request.user.is_authenticated %}
