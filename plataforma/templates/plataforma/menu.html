@@ -101,10 +101,7 @@
 
             <a href="{% url 'tareas' %}">
                 <button class="btn sidebar-button">Ver tareas</button>
-            </a>
-            <a href="{% url 'agregar_tarea' %}">
-                <button class="btn sidebar-button">Agregar tareas</button>
-            </a>
+            </a>            
             {% if request.user.is_authenticated %}
                 {% include 'principal/edicionPerfil.html' %} 
             {% endif %}
