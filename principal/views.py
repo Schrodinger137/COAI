@@ -155,11 +155,12 @@ def agregar_tarea(request, clase_id):
 @login_required
 def detalleTarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
-
+    form = EntregaForm()
     context = {
         "tarea": tarea,
         "is_profesor": request.is_profesor,
         "is_alumno": request.is_alumno,
+        'form':form
     }
     return render(request, "principal/detallesTarea.html", context)
 
