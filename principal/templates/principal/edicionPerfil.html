@@ -78,38 +78,44 @@
     </div>
 </div>
 
-<div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editarPerfilModalLabel">Registrar Nueva Clase</h5>
+                <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="{% url 'clases' %}">
+            <form method="post" action="{% url 'editar_perfil' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="nombreAlumno" class="form-label">Nombre del niño</label>
-                        <input type="text" class="form-control" id="nombreAlumno" required name="nombre">
+                        <label for="username" class="form-label">Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="username" 
+                               name="username" value="{{ user.username }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" 
+                               name="email" value="{{ user.email }}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="nombreTutor" class="form-label">Nombre del tutor</label>
-                        <input type="text" class="form-control" id="nombreTutor" required name="tutor">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" 
+                               name="telefono" value="{{  request.current_user.tel }}">
                     </div>
                     <div class="mb-3">
-                        <label for="telefonoTutor" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefonoTutor" required name="telefono">
+                        <label for="password" class="form-label">Nueva Contraseña (opcional)</label>
+                        <input type="password" class="form-control" id="password" name="password">
                     </div>
                     <div class="mb-3">
-                        <label for="emailAlumno" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="emailAlumno" required name="correo">
+                        <label for="password_confirm" class="form-label">Confirmar Contraseña</label>
+                        <input type="password" class="form-control" id="password_confirm" name="password_confirm">
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Registrar Clase</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
         </div>

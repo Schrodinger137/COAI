@@ -43,6 +43,8 @@ urlpatterns = [
 
     path('send_message/', chat_views.send_message, name='send_message'),
     path('cuenta/', views.cuenta, name='cuenta'),
+    path('calificar/<int:entrega_id>/', views.calificarTarea, name='calificar'),
+    path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
     
 ]
 

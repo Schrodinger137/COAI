@@ -109,10 +109,38 @@ def profesores(request):
     return render(request, "principal/profesores.html", context)
 
 
+from django.utils import timezone
+
 @login_required
+@agregar_roles
 def tareas(request):
-    tareas = Tareas.objects.all().order_by("-created_at")
-    return render(request, "principal/vistaTareas.html", {"tareas": tareas})
+    # Obtener el estado del switch (True si está activado)
+    mostrar_todas = request.GET.get('mostrar_todas', 'false') == 'true'
+    
+    # Obtener el usuario actual con su perfil extendido
+    current_user = request.current_user
+    
+    # Base queryset
+    if request.is_profesor:
+        tareas = Tareas.objects.filter(clase__profesor=request.user)
+    elif request.is_alumno:
+        tareas = Tareas.objects.filter(clase__alumnos=current_user)
+    else:
+        tareas = Tareas.objects.all()
+    
+    # Filtrar por fecha si no se quieren mostrar todas
+    if not mostrar_todas:
+        tareas = tareas.filter(fecha_entrega__gte=timezone.now())
+    
+    # Ordenar por fecha de creación
+    tareas = tareas.order_by("-created_at")
+    
+    return render(request, "principal/vistaTareas.html", {
+        "tareas": tareas,
+        "mostrar_todas": mostrar_todas,
+        "now": timezone.now()
+    }) 
+   
 
 
 @agregar_roles
@@ -319,6 +347,53 @@ def eliminar_tarea(request, tarea_id):
 
     return render(request, 'principal/eliminarTarea.html', context)
 
+@login_required
+@agregar_roles
 def cuenta(request):
-    return render(request, 'principal/edicionPerfil.html')
+    # Asegúrate de pasar current_user al contexto
+    return render(request, 'principal/edicionPerfil.html', {
+        'user': request.user,
+        'current_user': request.current_user
+    })
 
+
+def calificarTarea(request, entrega_id):
+    entrega = get_object_or_404(Entrega, id=entrega_id)
+
+    if request.method == "POST":
+        calificacion = request.POST.get("calificacion")
+        if calificacion.isdigit():
+            entrega.calificacion = int(calificacion)
+            entrega.save()
+            messages.success(request, "Calificación registrada correctamente.")
+        else:
+            messages.error(request, "La calificación debe ser un número entero.")
+
+    return redirect("entregas", tarea_id=entrega.tarea.id)
+
+@login_required
+@agregar_roles
+def editar_perfil(request):
+    if request.method == 'POST':
+        # Actualizar datos del User
+        user = request.user
+        user.username = request.POST.get('username')
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.email = request.POST.get('email')
+        
+        # Actualizar contraseña si se proporcionó
+        password = request.POST.get('password')
+        if password:
+            user.set_password(password)
+        
+        user.save()
+        
+        if hasattr(request, 'current_user') and request.current_user:
+            request.current_user.tel = request.POST.get('telefono', '')
+            request.current_user.save()
+        
+        messages.success(request, 'Perfil actualizado correctamente')
+        return redirect('/')
+    
+    return redirect('/')

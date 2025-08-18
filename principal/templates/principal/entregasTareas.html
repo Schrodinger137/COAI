@@ -2,7 +2,7 @@
 
 {% block contenido %}
 <div class="row">
-    <h1>Entregas de {{ tarea.nombre }} 
+    <h1>Entregas de {{ tarea.titulo }} 
         <a href="javascript:history.back()" class="btn btn-secondary mb-3">Regresar</a>
     </h1>
 
@@ -14,9 +14,21 @@
                     <h5 class="card-title m-0"> 
                       {{ entrega.alumno }}
                     </h5>
+                    {% if entrega.calificacion %}
+                        <span class="badge bg-success p-2">Calificación: {{ entrega.calificacion }}</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark p-2">Sin calificar</span>
+                    {% endif %}
+
+                    {% if entrega.calificacion == null %}
                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRevision{{ entrega.id }}">
                         Revisar
                     </button>
+                    {% else %}
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRevision{{ entrega.id }}">
+                        Revisada
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -31,7 +43,7 @@
                 <h5 class="modal-title">{{ tarea.titulo }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post">
+            <form method="post" action="{% url 'calificar' entrega.id %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     {% if entrega.archivo %}
@@ -59,7 +71,7 @@
 
                     <div class="mb-3 mt-3">
                         <label for="calificacion" class="form-label">Calificación</label>
-                        <input type="number" name="calificacion" class="form-control" min="0" max="10">
+                        <input type="number" name="calificacion" class="form-control" min="0" max="10" value="{{ entrega.calificacion }}" >
                     </div>
                 </div>
                 <div class="modal-footer">

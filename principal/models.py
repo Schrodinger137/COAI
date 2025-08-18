@@ -60,6 +60,7 @@ class Entrega(models.Model):
     archivo = models.FileField(upload_to="entregas", verbose_name="Archivo de entrega")
     comentario = models.TextField(blank=True, null=True, verbose_name="Comentario del alumno")
     fecha_entrega = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de entrega")
+    calificacion = models.IntegerField(null=True, blank=True, verbose_name="Calificación")
 
     class Meta:
         verbose_name = "Entrega"

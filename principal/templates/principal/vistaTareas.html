@@ -8,14 +8,17 @@
         <br>
     </div>
     
-    <div class="col-md-4">
-        <div class="d-flex justify-content-between align-items-center m-3">
-            <label class="form-check-label" for="flexSwitchCheckChecked">Mostrar todas las tareas</label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-            </div>
+   <div class="col-md-4">
+    <div class="d-flex justify-content-between align-items-center m-3">
+        <label class="form-check-label" for="flexSwitchCheckChecked">Mostrar todas las tareas</label>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" 
+                   id="flexSwitchCheckChecked" 
+                   {% if mostrar_todas %}checked{% endif %}
+                   onchange="location.href='?mostrar_todas='+this.checked">
         </div>
     </div>
+</div>
     
 
     {% if messages %}
@@ -31,26 +34,37 @@
 
 
     <div class="row">
-        {% for tarea in tareas %}
-        <div class="col-md-6 col-lg-4"> <!-- Se adapta al tamaño de pantalla -->
-            <div class="card border-2 border-success mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{tarea.titulo}}</h5>
-                    <p class="card-text">{{tarea.descripcion}} </p>
-                    <a href="{% url 'detalleTarea' tarea.id  %}" class="card-link float-end">Ver más</a>
-                </div>
+    {% for tarea in tareas %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card border-2 
+            {% if tarea.fecha_entrega < now %}border-success{% else %}border-success{% endif %} mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ tarea.titulo }}
+                    {% if tarea.fecha_entrega < now %}
+                        <span class="badge bg-danger ms-2">Pasada</span>
+                    {% endif %}
+                </h5>
+                <p class="card-text">{{ tarea.descripcion }}</p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        Entrega: {{ tarea.fecha_entrega|date:"d/m/Y H:i" }}
+                    </small>
+                </p>
+                <a href="{% url 'detalleTarea' tarea.id %}" class="card-link float-end">Ver más</a>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info" role="alert">
-                No hay tareas registradas aún.
-            </div>
-        </div>
-        {% endfor %}
-
-        
-
     </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            {% if mostrar_todas %}
+                No hay tareas registradas.
+            {% else %}
+                No hay tareas pendientes.
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
 </div>
 {%endblock%}
