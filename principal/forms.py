@@ -1,98 +1,64 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profesor,Clase, Alumnos, Tareas
+from .models import *
 from django.forms import ClearableFileInput
+from plataforma.models import KindUsers
 
-class ProfesorRegistrationForm(forms.ModelForm):
-    # Campos para el modelo User
+class ProfesorRegistroForm(forms.Form):
     username = forms.CharField(
-        max_length=150,
-        label="Usuario"
+        max_length=100,
+        label="Nombre de Usuario",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
-    email = forms.EmailField(
-        label="Email"
+    correo = forms.EmailField(
+        label="Correo Electrónico",
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    telefono = forms.CharField(
+        max_length=20,
+        required=False,
+        label="Número de Teléfono",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     password = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
         label="Contraseña"
     )
-    password_confirm = forms.CharField( # Campo para confirmar la contraseña
-        widget=forms.PasswordInput,
-        label="Confirmar Contraseña",
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Repetir contraseña"
     )
-    first_name = forms.CharField(
-        max_length=30,
-        required=True, # Hacer el nombre real requerido
-        label="Nombre(s)"
+    clase = forms.ModelChoiceField(
+        queryset=Clase2.objects.filter(profesor__isnull=True),
+        required=False,
+        label="Asignar Clase",
+        widget=forms.Select(attrs={'class': 'form-control'})
     )
-    last_name = forms.CharField(
-        max_length=30,
-        required=True, # Hacer el apellido real requerido
-        label="Apellido(s)"
-    )
-    class Meta:
-        model = Profesor
-        # establecemos el orden de los campos
-        fields = [
-            'first_name',
-            'last_name',
-            'username',
-            'email',
-            'password',
-            'password_confirm',
-            'telefono'#telefono es parte del modelo pero no del user, se agrega aqui
-        ]
-        
+
     def clean_username(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError("Este nombre ya está en uso.")
+            raise forms.ValidationError("El nombre de usuario ya está en uso")
         return username
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Este correo ya está registrado.")
-        return email
+    def clean_correo(self):
+        correo = self.cleaned_data.get("correo")
+        if User.objects.filter(email=correo).exists():
+            raise forms.ValidationError("El correo ya está registrado")
+        return correo
 
     def clean(self):
-        # Validar que las contraseñas coincidan
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password_confirm = cleaned_data.get('password_confirm')
-
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
         if password and password_confirm and password != password_confirm:
-            self.add_error('password_confirm', "Las contraseñas no coinciden.")
+            raise forms.ValidationError("Las contraseñas no coinciden")
         return cleaned_data
 
-    def save(self, commit=True):
-        # 1. Crear el usuario de Django
-        user = User.objects.create_user(
-            username=self.cleaned_data['username'],
-            email=self.cleaned_data['email'],
-            password=self.cleaned_data['password'],
-            first_name=self.cleaned_data['first_name'],
-            last_name=self.cleaned_data['last_name']
-        )
-        # Por defecto, un profesor NO es staff ni superusuario
-        user.is_staff = False
-        user.is_superuser = False
-        user.save()
 
-        # Crear la instancia del modelo y agregarla al user
-        profesor = super().save(commit=False) # crea la instancia
-        profesor.user = user #asigna el usuario creado a la instancia del modelo profesor
-
-        # agregamos first y last name del user al modelo
-        profesor.nombre = self.cleaned_data['first_name'] + ' ' + self.cleaned_data['last_name']
-        #profesor.nombre = f"{self.cleaned_data['first_name']} {self.cleaned_data['last_name']}"
-        if commit:
-            profesor.save()
-
-        return profesor
 class ClaseForm(forms.ModelForm):
     class Meta:
-        model = Clase
+        model = Clase2
         fields = ['nombre', 'descripcion', 'profesor']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la Clase'}),
@@ -105,10 +71,45 @@ class ClaseForm(forms.ModelForm):
             'profesor': 'Profesor Asignado',
         }
 
-class AlumnosForm(forms.ModelForm):
-    class Meta:
-        model = Alumnos
-        fields = ['nombre', 'tutor', 'telefono', 'correo', 'password']
+    # 🔑 Filtramos solo usuarios con rol "profesor"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        profesores = User.objects.filter(kind_user__kind__rol='profesor')
+        self.fields['profesor'].queryset = profesores
+
+class AlumnoRegistroForm(forms.Form):
+    username = forms.CharField(
+        max_length=100,
+        label="Nombre de Usuario",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    correo = forms.EmailField(
+        label="Correo Electrónico",
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    telefono = forms.CharField(
+        max_length=20,
+        required=False,
+        label="Número de Teléfono",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Contraseña"
+    )
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label="Repetir contraseña"
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError("Las contraseñas no coinciden")
+        return cleaned_data
+
 
 
 class CustomClearableFileInput(ClearableFileInput):
@@ -118,6 +119,22 @@ class TareasForm(forms.ModelForm):
     class Meta:
         model = Tareas
         fields = ['clase', 'titulo', 'descripcion', 'fecha_entrega', 'archivo']
-        widgets={
-            'archivo': CustomClearableFileInput
+        widgets = {
+            'clase': forms.HiddenInput(),  # Se asigna automáticamente desde la vista
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título de la tarea'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción de la tarea'}),
+            'fecha_entrega': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'archivo': CustomClearableFileInput,  # Mantienes tu widget personalizado
         }
+        labels = {
+            'titulo': 'Título',
+            'descripcion': 'Descripción',
+            'fecha_entrega': 'Fecha de entrega',
+            'archivo': 'Archivo adjunto',
+        }
+
+
+class EntregaForm(forms.ModelForm):
+    class Meta:
+        model = Entrega
+        fields = ['archivo', 'comentario']

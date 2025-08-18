@@ -7,6 +7,9 @@
         <div class="col-md-8">
             <h1>Clases</h1>
         </div>
+
+        {% if is_alumno %}
+        {% else %}
         <div class="col-md-4 text-end"> {# Columna para el botón alineado a la derecha #}
             {# Botón que abre el modal para registrar una Clase #}
             <div class="d-grid m-3 ">
@@ -16,6 +19,7 @@
                 </button>
             </div>
         </div>
+        {% endif %}
     </div>
 
     {# Mensajes de Django #}
@@ -41,12 +45,16 @@
                     <p class="card-text">Descripción: {{ clase.descripcion|default:"N/A" }}</p>
                     <p class="card-text">Profesor Asignado:
                         {% if clase.profesor %}
-                        {{ clase.profesor.nombre }}
+                        {{ clase.profesor }}
                         {% else %}
                         <span class="text-muted">Sin asignar</span>
                         {% endif %}
                     </p>
-                    <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at|date:"d M Y H:i" }}</small></p>
+
+                    <!-- <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at|date:"d M Y H:i" }}</small></p> -->
+
+                    <p class="card-text"><small class="text-muted">Registrada: {{ clase.created_at}}</small></p>
+
                     <a href="{% url 'detalleClase' clase.id %}" class="card-link float-end">Detalles de la clase</a>
                 </div>
             </div>

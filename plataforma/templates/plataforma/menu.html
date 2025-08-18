@@ -90,10 +90,7 @@
         <!-- Sidebar con ancho personalizado -->
         <div class="sidebar col-md-2 col-lg-custom p-3">
             <a href="{% url 'index' %}">
-                <button class="btn sidebar-button">Index</button>
-            </a>
-            <a href="{% url 'ejemplo' %}">
-                <button class="btn sidebar-button">Ejemplo</button>
+                <button class="btn sidebar-button">Inicio</button>
             </a>
             <a href="{% url 'clases' %}">
                 <button class="btn sidebar-button">Clases</button>
@@ -101,6 +98,7 @@
             <a href="{% url 'profesores' %}">
                 <button class="btn sidebar-button">Profesores</button>
             </a>
+
             <a href="{% url 'tareas' %}">
                 <button class="btn sidebar-button">Ver tareas</button>
             </a>
@@ -110,7 +108,8 @@
             {% if request.user.is_authenticated %}
                 {% include 'principal/edicionPerfil.html' %} 
             {% endif %}
-            <!-- {% include 'chat/chat_snippet.html' %} -->
+          
+            {% include 'chat/chat_snippet.html' %}
         </div>
 
         <!-- Contenido principal -->

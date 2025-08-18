@@ -11,37 +11,42 @@
                 <p style="text-align:justify">{{tarea.descripcion}} </p>
             </div>
         </div>
-
         <div class="col-md-5">
+            {% if is_alumno %}
             <div class="card border-2 border-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Subir tarea</h5>
-                    <form enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input class='form-control' name="tareaEntrega" id="" type="file" />
-                        </div>
+                    <form method="post" enctype="multipart/form-data" action="{% url 'entregar_tarea' tarea.id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
                         <button type="submit" class="btn sidebar-button">Enviar</button>
                     </form>
                 </div>
             </div>
+            {% else %}
+            {% endif %}
             <br>
-            <a type="submit" class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas </a>
-            <button type="submit" class="btn boton-naranja" data-bs-toggle="modal"
+            <a class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas</a>
+            {% if is_alumno %}
+            <button type="button" class="btn boton-naranja" data-bs-toggle="modal"
                 data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
+            {% else %}
+            {% endif %}
         </div>
+
         <br>
         <div class="col-md-7">
             <h1>Material</h1>
-                       {% if tarea.archivo %}
-                        <div class="alert alert-info" role="alert">
-                            <p>Se ha adjuntado un archivo para esta tarea. Puedes descargarlo haciendo clic en el botón.</p>
-                            <a href="{{ tarea.archivo.url }}" class="btn btn-primary" download>Descargar archivo</a>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-warning" role="alert">
-                            <h4 class="alert-heading">No se agregó ningún material para esta tarea.</h4>
-                        </div>
-                    {% endif %}
+            {% if tarea.archivo %}
+            <div class="alert alert-info" role="alert">
+                <p>Se ha adjuntado un archivo para esta tarea. Puedes descargarlo haciendo clic en el botón.</p>
+                <a href="{{ tarea.archivo.url }}" class="btn btn-primary" download>Descargar archivo</a>
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">No se agregó ningún material para esta tarea.</h4>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="col-md-9">

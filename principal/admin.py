@@ -2,22 +2,6 @@ from django.contrib import admin
 from .models import *
 from plataforma.models import *
 
-@admin.register(Profesor)
-class ProfesorAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'user', 'telefono', 'created_at')
-    search_fields = ('nombre', 'user__username', 'user__email')
-    list_filter = ('created_at',)
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at',)
-
-@admin.register(Clase)
-class ClaseAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'profesor', 'created_at')
-    search_fields = ('nombre', 'descripcion', 'profesor__nombre')
-    list_filter = ('created_at', 'profesor')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at',)
-
 @admin.register(Clase2)
 class Clase2Admin(admin.ModelAdmin):
     list_display = ('nombre', 'profesor', 'created_at')
@@ -45,14 +29,6 @@ class Clase2Admin(admin.ModelAdmin):
                 kwargs["queryset"] = KindUsers.objects.none()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-class AlumnosAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'tutor', 'telefono', 'correo', 'clase', 'created_at')
-    search_fields = ('nombre', 'tutor', 'correo', 'clase')
-    list_filter = ('created_at', 'clase')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at',)    
-admin.site.register(Alumnos, AlumnosAdmin)    
-
 class TareasAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'clase', 'fecha_entrega', 'created_at')
     search_fields = ('titulo', 'descripcion', 'clase__nombre')
@@ -60,3 +36,7 @@ class TareasAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     readonly_fields = ('created_at',)
 admin.site.register(Tareas, TareasAdmin)    
+
+@admin.register(Entrega)
+class EntregaAdmin(admin.ModelAdmin):
+    list_display = ('alumno', 'comentario', 'archivo', 'fecha_entrega')
