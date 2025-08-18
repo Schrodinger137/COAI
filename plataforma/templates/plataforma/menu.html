@@ -99,9 +99,11 @@
                 <button class="btn sidebar-button">Profesores</button>
             </a>
 
+
             <a href="{% url 'tareas' %}">
                 <button class="btn sidebar-button">Ver tareas</button>
             </a>            
+
             {% if request.user.is_authenticated %}
                 {% include 'principal/edicionPerfil.html' %} 
             {% endif %}

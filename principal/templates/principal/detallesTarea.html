@@ -24,13 +24,10 @@
                 </div>
             </div>
             {% else %}
-            {% endif %}
             <br>
             <a class="btn sidebar-button" href="{% url 'entregas' %}">Ver entregas</a>
-            {% if is_alumno %}
             <button type="button" class="btn boton-naranja" data-bs-toggle="modal"
                 data-bs-target="#confirmacionEliminar">Eliminar tarea</button>
-            {% else %}
             {% endif %}
         </div>
 
