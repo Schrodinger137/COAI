@@ -126,6 +126,18 @@ class AlumnoRegistroForm(forms.Form):
             raise forms.ValidationError("El número de teléfono debe contener exactamente 10 dígitos numéricos.")
         return telefono
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("El nombre de usuario ya está en uso")
+        return username
+
+    def clean_correo(self):
+        correo = self.cleaned_data.get("correo")
+        if User.objects.filter(email=correo).exists():
+            raise forms.ValidationError("El correo ya está registrado")
+        return correo
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")

@@ -78,6 +78,22 @@
             <div class="modal-body">
                 <form action="{% url 'registroAlumnos' clase.id %}" method="post">
                     {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
                     {{ form.as_p }}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -85,6 +101,7 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
@@ -110,6 +127,16 @@
         </div>
     </div>
 </div>
+
+{% if form.errors %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var myModal = new bootstrap.Modal(document.getElementById('agregarAlumnoModal'));
+        myModal.show();
+    });
+</script>
+{% endif %}
+
 
 {% if is_alumno %}
 {% else %}
