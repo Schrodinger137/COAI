@@ -213,7 +213,9 @@
             <a href="{% url 'tareas' %}">
                 <button class="btn sidebar-button">Ver tareas</button>
             </a>
+            
             {% include 'principal/edicionPerfil.html' %}
+            
         {% else %}
             <a href="{% url 'index' %}#ubicacion">
                 <button class="btn sidebar-button">Ubicacion</button>
