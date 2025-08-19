@@ -8,8 +8,7 @@
             <h1>Clases</h1>
         </div>
 
-        {% if is_alumno %}
-        {% else %}
+        {% if request.user.is_superuser %}
         <div class="col-md-4 text-end"> {# Columna para el botón alineado a la derecha #}
             {# Botón que abre el modal para registrar una Clase #}
             <div class="d-grid m-3 ">
@@ -19,6 +18,8 @@
                 </button>
             </div>
         </div>
+        {% else %}
+
         {% endif %}
     </div>
 

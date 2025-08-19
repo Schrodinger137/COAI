@@ -10,12 +10,12 @@
         <div class="col-md-4  text-end"> {# Columna para el botón alineado a la derecha #}
             {# Botón que abre el modal #}
             <div class="d-grid m-3">
-                {% if is_alumno %}
-                {% else %}
+                {% if request.user.is_superuser %}
                 <button type="button" class="btn btn-success p-3" data-bs-toggle="modal"
                     data-bs-target="#registrarProfesorModal">
                     Agregar Profesor
                 </button>
+                {% else %}
                 {% endif %}
             </div>
         </div>
@@ -94,14 +94,14 @@
                         {% if form.errors %}
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                            {% for field in form %}
+                                {% for field in form %}
                                 {% for error in field.errors %}
-                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
                                 {% endfor %}
-                            {% endfor %}
-                            {% for error in form.non_field_errors %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
                                 <li>{{ error }}</li>
-                            {% endfor %}
+                                {% endfor %}
                             </ul>
                         </div>
                         {% endif %}
@@ -125,13 +125,13 @@
             </div>
         </div>
     </div>
-{% if form.errors %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var modal = new bootstrap.Modal(document.getElementById('registrarProfesorModal'));
-        modal.show();
-    });
-</script>
-{% endif %}
+    {% if form.errors %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = new bootstrap.Modal(document.getElementById('registrarProfesorModal'));
+            modal.show();
+        });
+    </script>
+    {% endif %}
 
     {% endblock %}

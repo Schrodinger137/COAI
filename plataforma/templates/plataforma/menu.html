@@ -157,64 +157,44 @@
                 <a class="navbar-brand">
                     <strong class="text-white"><u><i><a href="{% url 'index' %}" class="text-white">C O A I </a></u> -
                         {% if request.user.is_authenticated %}
-                            {{ user.username }}
+                        {{ user.username }}
                         {% else %}
-                            Invitado
+                        Invitado
                         {% endif %}
-                    </i></strong>
+                        </i></strong>
                 </a>
 
-                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-expanded="false"
+                    aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'logout' %}"><button class="btn cerrar-sesion d-none d-md-block">Cerrar Sesión</button></a>
+                <a href="{% url 'logout' %}"><button class="btn cerrar-sesion d-none d-md-block">Cerrar
+                        Sesión</button></a>
                 {% endif %}
             </div>
         </nav>
-
-        <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        {% if messages %}
+        <script>
+            {% for message in messages %}
+            alert("{{ message|escapejs }}");
+            {% endfor %}
+        </script>
+        {% endif %}
+        <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasMenu"
+            aria-labelledby="offcanvasMenuLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasMenuLabel">Menú</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
                 <a href="{% url 'index' %}">
                     <button class="btn sidebar-button">Inicio</button>
                 </a>
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'clases' %}">
-                        <button class="btn sidebar-button">Clases</button>
-                    </a>
-                    <a href="{% url 'profesores' %}">
-                        <button class="btn sidebar-button">Profesores</button>
-                    </a>
-                    <a href="{% url 'tareas' %}">
-                        <button class="btn sidebar-button">Ver tareas</button>
-                    </a>
-                    <button class="btn sidebar-button" type="button" data-bs-toggle="modal" data-bs-target="#miCuentaModal">
-                        <i class="fas fa-user-circle me-2"></i> Mi Cuenta
-                    </button>
-                    <a href="{% url 'logout' %}">
-                        <button class="btn sidebar-button">Cerrar Sesión</button>
-                    </a>
-                {% else %}
-                    <a href="{% url 'index' %}#ubicacion">
-                        <button class="btn sidebar-button">Ubicacion</button>
-                    </a>
-                    <a href="{% url 'index' %}#contacto">
-                        <button class="btn sidebar-button">Contacto</button>
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="sidebar col-md-2 col-lg-custom p-3 d-none d-md-block">
-            <a href="{% url 'index' %}">
-                <button class="btn sidebar-button">Inicio</button>
-            </a>
-            {% if request.user.is_authenticated %}
                 <a href="{% url 'clases' %}">
                     <button class="btn sidebar-button">Clases</button>
                 </a>
@@ -227,13 +207,44 @@
                 <button class="btn sidebar-button" type="button" data-bs-toggle="modal" data-bs-target="#miCuentaModal">
                     <i class="fas fa-user-circle me-2"></i> Mi Cuenta
                 </button>
-            {% else %}
+                <a href="{% url 'logout' %}">
+                    <button class="btn sidebar-button">Cerrar Sesión</button>
+                </a>
+                {% else %}
                 <a href="{% url 'index' %}#ubicacion">
                     <button class="btn sidebar-button">Ubicacion</button>
                 </a>
                 <a href="{% url 'index' %}#contacto">
                     <button class="btn sidebar-button">Contacto</button>
                 </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="sidebar col-md-2 col-lg-custom p-3 d-none d-md-block">
+            <a href="{% url 'index' %}">
+                <button class="btn sidebar-button">Inicio</button>
+            </a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'clases' %}">
+                <button class="btn sidebar-button">Clases</button>
+            </a>
+            <a href="{% url 'profesores' %}">
+                <button class="btn sidebar-button">Profesores</button>
+            </a>
+            <a href="{% url 'tareas' %}">
+                <button class="btn sidebar-button">Ver tareas</button>
+            </a>
+            <button class="btn sidebar-button" type="button" data-bs-toggle="modal" data-bs-target="#miCuentaModal">
+                <i class="fas fa-user-circle me-2"></i> Mi Cuenta
+            </button>
+            {% else %}
+            <a href="{% url 'index' %}#ubicacion">
+                <button class="btn sidebar-button">Ubicacion</button>
+            </a>
+            <a href="{% url 'index' %}#contacto">
+                <button class="btn sidebar-button">Contacto</button>
+            </a>
             {% endif %}
         </div>
 
@@ -244,9 +255,9 @@
     </div>
 
     {% if request.user.is_authenticated %}
-        <a href="{% url 'chat_view' %}" class="chat-button" title="Abrir chat">
-            <i class="fas fa-comments"></i>
-        </a>
+    <a href="{% url 'chat_view' %}" class="chat-button" title="Abrir chat">
+        <i class="fas fa-comments"></i>
+    </a>
     {% endif %}
 
     <div class="row">
@@ -258,9 +269,9 @@
                 <div class="col-md-4">
                     <h5><strong>Integrantes</strong></h5>
                     <p>Arturo Osiel Arrieta<br>
-                    Alejandro Govea Martinez<br>
-                    Carina Ponce Osornio<br>
-                    Ivo Yaluk Ramos</p>
+                        Alejandro Govea Martinez<br>
+                        Carina Ponce Osornio<br>
+                        Ivo Yaluk Ramos</p>
                 </div>
                 <div class="col-md-4">
                     <h5><strong>Desarrollo web integral</strong></h5>
@@ -272,4 +283,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% include 'principal/edicionPerfil.html' %}
 </body>
+
 </html>
