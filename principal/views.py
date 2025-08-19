@@ -184,9 +184,13 @@ def agregar_tarea(request, clase_id):
 def detalleTarea(request, tarea_id):
     tarea = get_object_or_404(Tareas, id=tarea_id)
 
-    # Handle POST requests
+    # buscar si este alumno ya entregó
+    entrega_usuario = None
+    if request.is_alumno:
+        entrega_usuario = Entrega.objects.filter(tarea=tarea, alumno=request.user.kind_user).first()
+
+    # Procesar POST
     if request.method == 'POST':
-        # checa si es el form duda
         if 'duda_form_submit' in request.POST:
             duda_form = DudaForm(request.POST)
             if duda_form.is_valid():
@@ -196,11 +200,8 @@ def detalleTarea(request, tarea_id):
                 duda.save()
                 messages.success(request, '¡Tu duda ha sido publicada!')
                 return redirect('detalleTarea', tarea_id=tarea.id)
-            else:
-                messages.error(request, 'Hubo un error al enviar tu duda. Por favor, revisa el formulario.')
-        
-        # checa si es el form entrega
-        elif 'entrega_form_submit' in request.POST:
+
+        elif 'entrega_form_submit' in request.POST and not entrega_usuario:
             entrega_form = EntregaForm(request.POST, request.FILES)
             if entrega_form.is_valid():
                 entrega = entrega_form.save(commit=False)
@@ -209,8 +210,8 @@ def detalleTarea(request, tarea_id):
                 entrega.save()
                 messages.success(request, '¡Tarea entregada con éxito!')
                 return redirect('detalleTarea', tarea_id=tarea.id)
-            else:
-                messages.error(request, 'Hubo un error al entregar la tarea.')
+        else:
+            messages.error(request, 'Ya entregaste esta tarea o hubo un error.')
 
     dudas = tarea.dudas.all().order_by('-fecha_creacion')
     duda_form = DudaForm()
@@ -223,9 +224,11 @@ def detalleTarea(request, tarea_id):
         "entrega_form": entrega_form,
         "duda_form": duda_form,
         "dudas": dudas,
+        "entrega_usuario": entrega_usuario,  
     }
-    
+
     return render(request, "principal/detallesTarea.html", context)
+
 
 @agregar_roles
 @login_required

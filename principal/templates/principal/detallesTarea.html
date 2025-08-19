@@ -15,17 +15,37 @@
         </div>
         <div class="col-md-5">
             {% if is_alumno %}
-            <div class="card border-2 border-success h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Subir tarea</h5>
-                    <form method="post" enctype="multipart/form-data" action="{% url 'entregar_tarea' tarea.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="entrega_form_submit" value="1">
-                        {{ entrega_form.as_p }}
-                        <button type="submit" class="btn sidebar-button">Enviar</button>
-                    </form>
-                </div>
-            </div>
+                {% if entrega_usuario %}
+                    {% if entrega_usuario.calificacion %}
+                     <div class="alert alert-success">
+                        Ya entregaste esta tarea
+                        <p>Tarea calificada: {{ entrega_usuario.calificacion }}</p>
+                    </div>
+                    <a href="{{ entrega_usuario.archivo.url }}" class="btn btn-primary" target="_blank">
+                        Ver archivo entregado
+                    </a>
+                    {% else %}
+                     <div class="alert alert-success">
+                        Ya entregaste esta tarea
+                        <p>Calificación: Pendiente</p>
+                    </div>
+                    <a href="{{ entrega_existente.archivo.url }}" class="btn btn-primary" download>
+                        Ver archivo entregado
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <div class="card border-2 border-success h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Subir tarea</h5>
+                            <form method="post" enctype="multipart/form-data" action="{% url 'entregar_tarea' tarea.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="entrega_form_submit" value="1">
+                                {{ entrega_form.as_p }}
+                                <button type="submit" class="btn sidebar-button">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
             {% else %}
             <br>
             <a class="btn sidebar-button" href="{% url 'entregas' tarea.id %}">Ver entregas</a>

@@ -55,7 +55,8 @@
                             {% elif file_extension == ".pdf" %}    
                                 <div class="mb-3">
                                     <div class="modal-body">
-                                        <iframe src="{{ entrega.archivo.url }}" style="width:100%; height:500px;" frameborder="0"></iframe>
+                                        <!-- <iframe src="{{ entrega.archivo.url }}" style="width:100%; height:500px;" frameborder="0"></iframe> -->
+                                         <a href="{{ entrega.archivo.url }}" class="btn btn-primary" download>Descargar archivo</a>
                                     </div>
                                 </div>
                             {% else %}
