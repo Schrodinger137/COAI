@@ -11,6 +11,8 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+        verbose_name = "Mensaje"
+        verbose_name_plural = "Mensajes"
 
     def __str__(self):
         return f"De {self.sender} a {self.receiver}: {self.content[:20]}..."

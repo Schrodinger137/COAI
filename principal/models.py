@@ -19,6 +19,10 @@ class Clase2(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Clase"
+        verbose_name_plural = "Clases"
+
     def __str__(self):
         return self.nombre
 
@@ -48,6 +52,10 @@ class Duda(models.Model):
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     contenido = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Duda"
+        verbose_name_plural = "Dudas"
     
     def __str__(self):
         return f'Duda de {self.autor.username} sobre {self.tarea.titulo}'
